@@ -13,11 +13,11 @@ class DatabaseSeeder extends Seeder
     {
         // Users
         $admin = User::create([
-            'name' => 'Admin', 'email' => 'admin@himalayatrails.com',
-            'password' => Hash::make('Password'), 'role' => 'admin',
+            'name' => 'Admin', 'email' => 'admin@pathtosnow.com',
+            'password' => Hash::make('password'), 'role' => 'admin',
         ]);
         User::create([
-            'name' => 'Ram Shrestha', 'email' => 'customer@trekbazar.com',
+            'name' => 'Ram Shrestha', 'email' => 'customer@pathtosnow.com',
             'password' => Hash::make('password'), 'role' => 'customer',
         ]);
 
