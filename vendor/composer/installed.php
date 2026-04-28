@@ -1,9 +1,9 @@
 <?php return array(
     'root' => array(
         'name' => 'trekbazar/trekbazar',
-        'pretty_version' => '1.0.0+no-version-set',
-        'version' => '1.0.0.0',
-        'reference' => null,
+        'pretty_version' => 'dev-main',
+        'version' => 'dev-main',
+        'reference' => 'b4d836fc7ed9a063e2db1ac97a0f7bc031cea604',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -615,6 +615,15 @@
             'install_path' => __DIR__ . '/../phar-io/version',
             'aliases' => array(),
             'dev_requirement' => true,
+        ),
+        'phpmailer/phpmailer' => array(
+            'pretty_version' => 'v7.0.2',
+            'version' => '7.0.2.0',
+            'reference' => 'ebf1655bd5b99b3f97e1a3ec0a69e5f4cd7ea088',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../phpmailer/phpmailer',
+            'aliases' => array(),
+            'dev_requirement' => false,
         ),
         'phpoption/phpoption' => array(
             'pretty_version' => '1.9.5',
@@ -1293,9 +1302,9 @@
             'dev_requirement' => false,
         ),
         'trekbazar/trekbazar' => array(
-            'pretty_version' => '1.0.0+no-version-set',
-            'version' => '1.0.0.0',
-            'reference' => null,
+            'pretty_version' => 'dev-main',
+            'version' => 'dev-main',
+            'reference' => 'b4d836fc7ed9a063e2db1ac97a0f7bc031cea604',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

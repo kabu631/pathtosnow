@@ -1,5 +1,6 @@
 <script setup>
 import { Head, Link, useForm } from '@inertiajs/vue3'
+import { router } from '@inertiajs/vue3'
 import AdminLayout from '@/Layouts/AdminLayout.vue'
 
 const props = defineProps({ order: Object })
@@ -36,6 +37,10 @@ function fmt(d, time = false) {
   const opts = { day: 'numeric', month: 'short', year: 'numeric' }
   if (time) { opts.hour = '2-digit'; opts.minute = '2-digit' }
   return new Date(d).toLocaleDateString('en-GB', opts)
+}
+function deleteOrder() {
+  if (!confirm(`Permanently delete order ${props.order.order_number}? This cannot be undone.`)) return
+  router.delete(`/admin/orders/${props.order.id}`)
 }
 </script>
 
@@ -242,6 +247,15 @@ function fmt(d, time = false) {
               <span class="text-gray-800 font-medium capitalize">{{ order.payment_method ?? 'COD' }}</span>
             </div>
           </div>
+        </div>
+
+        <!-- Danger Zone -->
+        <div class="bg-white rounded-xl border border-red-100 shadow-sm p-5">
+          <h2 class="font-bold text-gray-900 mb-3">Danger Zone</h2>
+          <button @click="deleteOrder"
+                  class="w-full bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 font-semibold py-2.5 rounded-xl text-sm transition-colors">
+            🗑 Delete Order
+          </button>
         </div>
 
       </div>

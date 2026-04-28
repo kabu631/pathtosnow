@@ -3,6 +3,7 @@
 namespace App\Models;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use App\Services\MailService;
 
 class User extends Authenticatable
 {
@@ -15,4 +16,10 @@ class User extends Authenticatable
     public function bookings()         { return $this->hasMany(Booking::class); }
     public function posts()            { return $this->hasMany(Post::class); }
     public function orders()           { return $this->hasMany(Order::class); }
+
+    public function sendPasswordResetNotification($token): void
+    {
+        $url = url('/reset-password/' . $token . '?email=' . urlencode($this->email));
+        app(MailService::class)->sendPasswordReset($this, $url);
+    }
 }

@@ -5,6 +5,7 @@ use App\Http\Controllers\Controller;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
 use App\Models\Booking;
+use App\Services\MailService;
 
 class AdminBookingController extends Controller
 {
@@ -39,6 +40,8 @@ class AdminBookingController extends Controller
             'cancelled_at'        => $req->status === 'cancelled' ? now() : $booking->cancelled_at,
             'cancellation_reason' => $req->status === 'cancelled' ? $req->reason : $booking->cancellation_reason,
         ]);
+        $booking->load('package');
+        app(MailService::class)->sendBookingStatusUpdate($booking);
         return back()->with('success', "Booking status updated to {$req->status}");
     }
 
@@ -47,5 +50,12 @@ class AdminBookingController extends Controller
         $req->validate(['admin_notes' => 'nullable|string|max:2000']);
         $booking->update(['admin_notes' => $req->admin_notes]);
         return back()->with('success', 'Notes saved.');
+    }
+
+    public function destroy(Booking $booking)
+    {
+        $ref = $booking->booking_reference;
+        $booking->delete();
+        return redirect('/admin/bookings')->with('success', "Booking {$ref} deleted.");
     }
 }

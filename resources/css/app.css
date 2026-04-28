@@ -117,6 +117,38 @@
 }
 
 /* Page transitions */
-.page-enter-active, .page-leave-active { transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
-.page-enter-from { opacity: 0; transform: translateY(15px); }
-.page-leave-to { opacity: 0; transform: translateY(-15px); }
+.page-enter-active { transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+.page-leave-active { transition: opacity 0.2s ease, transform 0.2s ease; }
+.page-enter-from { opacity: 0; transform: translateY(12px); }
+.page-leave-to   { opacity: 0; transform: translateY(-8px); }
+
+/* Navigation loading overlay */
+#page-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+#page-loader.visible { opacity: 1; }
+
+.page-loader-ring {
+  width: 48px;
+  height: 48px;
+  border: 3px solid rgba(5, 150, 105, 0.15);
+  border-top-color: #059669;
+  border-radius: 50%;
+  animation: page-loader-spin 0.75s linear infinite;
+  box-shadow: 0 0 0 6px rgba(255, 255, 255, 0.9);
+}
+
+@keyframes page-loader-spin {
+  to { transform: rotate(360deg); }
+}

@@ -73,6 +73,13 @@
                 <p v-if="booking.confirmed_at" class="text-xs text-gray-400 mt-2">Confirmed</p>
                 <p v-if="booking.confirmed_at" class="text-sm text-gray-700">{{ booking.confirmed_at }}</p>
             </div>
+            <div class="bg-white rounded-xl border border-red-100 p-5">
+                <h2 class="text-sm font-semibold text-slate-900 mb-3">Danger Zone</h2>
+                <button @click="deleteBooking"
+                        class="w-full bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 font-semibold py-2.5 rounded-xl text-sm transition-colors">
+                    🗑 Delete Booking
+                </button>
+            </div>
         </div>
     </div>
 </AdminLayout>
@@ -94,5 +101,9 @@ function updateStatus(s) { router.patch(`/admin/bookings/${props.booking.id}/sta
 function saveNotes() {
     savingNotes.value = true
     router.patch(`/admin/bookings/${props.booking.id}/notes`, { admin_notes: notes.value }, { onFinish: () => savingNotes.value = false })
+}
+function deleteBooking() {
+    if (!confirm(`Permanently delete booking ${props.booking.booking_reference}? This cannot be undone.`)) return
+    router.delete(`/admin/bookings/${props.booking.id}`)
 }
 </script>

@@ -5,6 +5,7 @@ use App\Http\Controllers\Controller;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
 use App\Models\{Package, Booking};
+use App\Services\MailService;
 
 class BookingController extends Controller
 {
@@ -42,6 +43,9 @@ class BookingController extends Controller
             'currency'         => 'USD',
             'status'           => 'pending',
         ]));
+
+        $booking->load('package');
+        app(MailService::class)->sendBookingConfirmation($booking);
 
         return redirect()->route('bookings.success', $booking->booking_reference)
             ->with('booking_ref', $booking->booking_reference);

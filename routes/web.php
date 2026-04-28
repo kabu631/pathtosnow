@@ -2,7 +2,7 @@
 // routes/web.php
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Public\{HomeController, PackageController, BlogController, ShopController, CartController, BookingController, GalleryController, StaticPageController, ContactController};
-use App\Http\Controllers\Admin\{DashboardController, AdminPackageController, ItineraryController, AdminBookingController, AdminPostController, AdminProductController, AdminOrderController, GalleryController as AdminGalleryController, GalleryImageController, AdminSlideController, AdminPageController, AdminContactController, AdminPackageTypeController, AdminPostTypeController};
+use App\Http\Controllers\Admin\{DashboardController, AdminPackageController, ItineraryController, AdminBookingController, AdminPostController, AdminProductController, AdminOrderController, GalleryController as AdminGalleryController, GalleryImageController, AdminSlideController, AdminPageController, AdminContactController, AdminPackageTypeController, AdminPostTypeController, AdminUserController};
 use App\Http\Controllers\Auth\AuthController;
 
 // ── PUBLIC ROUTES ──────────────────────────────────────────────────────────
@@ -82,6 +82,10 @@ Route::middleware('guest')->group(function () {
     Route::post('/login', [AuthController::class, 'login']);
     Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
     Route::post('/register', [AuthController::class, 'register']);
+    Route::get('/forgot-password', [AuthController::class, 'showForgotPassword'])->name('password.request');
+    Route::post('/forgot-password', [AuthController::class, 'sendResetLink'])->name('password.email');
+    Route::get('/reset-password/{token}', [AuthController::class, 'showResetPassword'])->name('password.reset');
+    Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('password.update');
 });
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
 
@@ -115,6 +119,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
         Route::get('/{booking}', [AdminBookingController::class, 'show'])->name('show');
         Route::patch('/{booking}/status', [AdminBookingController::class, 'updateStatus'])->name('status');
         Route::patch('/{booking}/notes', [AdminBookingController::class, 'updateNotes'])->name('notes');
+        Route::delete('/{booking}', [AdminBookingController::class, 'destroy'])->name('destroy');
     });
 
     // Posts
@@ -147,6 +152,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
         Route::get('/{order}', [AdminOrderController::class, 'show'])->name('show');
         Route::patch('/{order}/status', [AdminOrderController::class, 'updateStatus'])->name('status');
         Route::patch('/{order}/payment', [AdminOrderController::class, 'updatePayment'])->name('payment');
+        Route::delete('/{order}', [AdminOrderController::class, 'destroy'])->name('destroy');
     });
 
     // Static Pages (About Us, Privacy Policy, etc.)
@@ -161,6 +167,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
         Route::get('/', [AdminContactController::class, 'index'])->name('index');
         Route::get('/{message}', [AdminContactController::class, 'show'])->name('show');
         Route::patch('/{message}/replied', [AdminContactController::class, 'markReplied'])->name('replied');
+        Route::post('/{message}/reply', [AdminContactController::class, 'sendReply'])->name('reply');
         Route::delete('/{message}', [AdminContactController::class, 'destroy'])->name('destroy');
     });
 
@@ -184,6 +191,12 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     // Slides
     Route::post('slides/reorder', [AdminSlideController::class, 'reorder'])->name('slides.reorder');
     Route::resource('slides', AdminSlideController::class);
+
+    // Users
+    Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');
+    Route::get('/users/{user}/edit', [AdminUserController::class, 'edit'])->name('users.edit');
+    Route::put('/users/{user}', [AdminUserController::class, 'update'])->name('users.update');
+    Route::delete('/users/{user}', [AdminUserController::class, 'destroy'])->name('users.destroy');
 
     // Shared image upload
     Route::post('/upload', function (\Illuminate\Http\Request $req) {

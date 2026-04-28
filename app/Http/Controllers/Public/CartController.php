@@ -5,6 +5,7 @@ use App\Http\Controllers\Controller;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
 use App\Models\{Product, Order, OrderItem};
+use App\Services\MailService;
 
 class CartController extends Controller
 {
@@ -111,6 +112,8 @@ class CartController extends Controller
         }
 
         session()->forget('cart');
+        $order->load('items');
+        app(MailService::class)->sendOrderConfirmation($order);
         return redirect()->route('cart.success')->with('order_number', $order->order_number);
     }
 

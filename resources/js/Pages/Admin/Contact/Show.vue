@@ -1,14 +1,18 @@
 <script setup>
+import { ref } from 'vue'
 import { Head, Link, useForm } from '@inertiajs/vue3'
 import AdminLayout from '@/Layouts/AdminLayout.vue'
 
 const props = defineProps({ message: Object })
 
-const replyForm = useForm({})
+const showReplyBox = ref(false)
+const replyForm  = useForm({ reply_text: '' })
 const deleteForm = useForm({})
 
-function markReplied() {
-  replyForm.patch(`/admin/contact/${props.message.id}/replied`)
+function sendReply() {
+  replyForm.post(`/admin/contact/${props.message.id}/reply`, {
+    onSuccess: () => { showReplyBox.value = false; replyForm.reset() }
+  })
 }
 function remove() {
   if (confirm('Delete this message permanently?')) {
@@ -61,14 +65,29 @@ const statusStyles = {
             <p class="text-gray-800 leading-relaxed whitespace-pre-line text-sm">{{ message.message }}</p>
           </div>
 
-          <!-- Quick reply hint -->
-          <div class="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-xl">
-            <p class="text-sm text-blue-800 font-medium mb-1">💡 Reply via email</p>
-            <a :href="`mailto:${message.email}?subject=Re: ${message.subject}`"
-               class="text-blue-600 hover:text-blue-800 text-sm font-semibold underline">
-              {{ message.email }}
-            </a>
-            <p class="text-xs text-blue-600 mt-1">Click to open in your email client</p>
+          <!-- Reply box -->
+          <div class="mt-6">
+            <div v-if="!showReplyBox">
+              <button @click="showReplyBox = true"
+                      class="w-full flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3 rounded-xl text-sm transition-colors">
+                ✉️ Write a Reply
+              </button>
+            </div>
+            <div v-else class="bg-emerald-50 border border-emerald-200 rounded-xl p-5">
+              <p class="text-sm font-semibold text-emerald-900 mb-3">Reply to {{ message.name }}</p>
+              <textarea v-model="replyForm.reply_text" rows="5" class="input resize-none mb-3"
+                        placeholder="Write your reply here…"/>
+              <p v-if="replyForm.errors.reply_text" class="text-red-500 text-xs mb-2">{{ replyForm.errors.reply_text }}</p>
+              <div class="flex gap-2">
+                <button @click="sendReply" :disabled="replyForm.processing"
+                        class="btn-primary text-sm px-6">
+                  {{ replyForm.processing ? 'Sending…' : 'Send via Email' }}
+                </button>
+                <button @click="showReplyBox = false; replyForm.reset()" class="btn-ghost text-sm">
+                  Cancel
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -80,14 +99,9 @@ const statusStyles = {
         <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-5">
           <h2 class="font-bold text-gray-900 mb-4">Actions</h2>
           <div class="space-y-3">
-            <a :href="`mailto:${message.email}?subject=Re: ${message.subject}`"
-               class="w-full flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2.5 rounded-xl text-sm transition-colors">
-              ✉️ Reply by Email
-            </a>
-            <button v-if="message.status !== 'replied'" @click="markReplied"
-                    :disabled="replyForm.processing"
-                    class="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white font-semibold py-2.5 rounded-xl text-sm transition-colors">
-              ✅ Mark as Replied
+            <button @click="showReplyBox = !showReplyBox"
+                    class="w-full flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2.5 rounded-xl text-sm transition-colors">
+              ✉️ {{ showReplyBox ? 'Hide Reply' : 'Reply by Email' }}
             </button>
             <button @click="remove" :disabled="deleteForm.processing"
                     class="w-full bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 font-semibold py-2.5 rounded-xl text-sm transition-colors">

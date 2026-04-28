@@ -48,7 +48,7 @@
           <div>
             <div class="flex justify-between items-center mb-1.5">
               <label for="password" class="label mb-0">Password</label>
-              <a href="#" class="text-xs text-emerald-600 hover:text-emerald-700">Forgot password?</a>
+              <Link href="/forgot-password" class="text-xs text-emerald-600 hover:text-emerald-700">Forgot password?</Link>
             </div>
             <input id="password" v-model="form.password" type="password" class="input" placeholder="Your password" required autocomplete="current-password"/>
           </div>

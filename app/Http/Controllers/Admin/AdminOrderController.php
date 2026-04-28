@@ -49,4 +49,12 @@ class AdminOrderController extends Controller
 
         return back()->with('success', 'Payment status updated to ' . ucfirst($req->payment_status) . '.');
     }
+
+    public function destroy(Order $order)
+    {
+        $num = $order->order_number;
+        $order->items()->delete();
+        $order->delete();
+        return redirect('/admin/orders')->with('success', "Order {$num} deleted.");
+    }
 }
