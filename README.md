@@ -4,7 +4,7 @@
 
 PathToSnow is a curated travel marketplace and gear shop designed for adventurers exploring the Himalayas. Built by a local for the world, it connects travellers directly with expert guides and provides high-quality trekking equipment.
 
-> **📌 Complete Setup Instructions Below** - Follow all steps to run this project successfully!
+> **📌 Complete Setup Instructions Below** — Follow all steps to run this project successfully!
 
 ---
 
@@ -17,6 +17,8 @@ PathToSnow is a curated travel marketplace and gear shop designed for adventurer
 - [Running Locally](#-running-locally)
 - [Project Structure](#-project-structure)
 - [Database](#-database-models)
+- [Email Services](#-email-services)
+- [Admin Panel](#-admin-panel)
 - [Common Commands](#-common-commands)
 - [Troubleshooting](#-troubleshooting)
 - [Deployment](#-deployment)
@@ -26,103 +28,97 @@ PathToSnow is a curated travel marketplace and gear shop designed for adventurer
 
 ## 🏔️ Key Features
 
-- **Dynamic Booking System**: 6 specialized package types (Adventure, Trekking, Wildlife, etc.) with day-by-day itineraries.
-- **Travel Packages Management**: Browse, filter, and book trekking expeditions with detailed information.
-- **Gear Shop**: Fully functional e-commerce experience for Himalayan outdoor equipment with payment integration ready.
-- **Travel Journal**: Expert-written blogs and guides on Nepali culture, food, and festivals.
-- **Admin Dashboard**: Comprehensive management of packages, bookings, shop inventory, and blog posts.
-- **Photo Gallery**: Stunning visual albums of Nepal's most beautiful destinations organized by location.
-- **User Authentication**: Secure user registration, login, and profile management.
-- **Contact Management**: Capture inquiries and feedback from visitors.
-- **Static Pages**: Customizable content pages (About, Terms, Privacy, etc.).
-- **Responsive Design**: Fully responsive UI that works on desktop, tablet, and mobile devices.
+### Public
+- **Dynamic Booking System** — 6 specialised package types (Adventure, Trekking, Wildlife, etc.) with day-by-day itineraries.
+- **Travel Packages** — Browse, filter, and book trekking expeditions with detailed information.
+- **Gear Shop** — Fully functional e-commerce experience for Himalayan outdoor equipment.
+- **Travel Journal** — Expert-written blogs and guides on Nepali culture, food, and festivals.
+- **Photo Gallery** — Stunning visual albums of Nepal's most beautiful destinations.
+- **Contact Form** — Visitor enquiry capture with admin reply-by-email.
+
+### Authentication
+- **User Registration & Login** — Secure session-based authentication.
+- **Forgot Password** — Full email-based password reset flow (custom pages, PHPMailer delivery).
+- **Profile Management** — Users can view and update their account details.
+
+### Admin Panel
+- **Dashboard** — Overview of bookings, orders, messages, and users.
+- **Full CRUD** — Manage packages, package types, posts, post types, products, gallery albums, sliders, and static pages.
+- **User Management** — Search, filter, edit roles/passwords, and delete users. Admins cannot delete their own account.
+- **Booking Management** — Update booking status, save internal notes, and delete bookings.
+- **Order Management** — Update order and payment status, view full order details, and delete orders.
+- **Contact Messages** — View, reply by email, and delete contact messages directly from the panel.
+- **File Upload** — Drag-and-drop image upload for hero banners (Package Types & Post Types).
+
+### UX
+- **Page Loading Overlay** — Smooth spinner shown on slow Inertia navigations (150 ms delay to avoid flashing on fast loads).
+- **Responsive Design** — Fully responsive UI across desktop, tablet, and mobile.
 
 ---
 
 ## 🛠️ Technology Stack
 
 ### Backend
-- **PHP 8.2+** - Server-side programming language
-- **Laravel 11** - Modern PHP web framework
-- **Inertia.js** - Seamless Vue and Laravel integration
-- **SQLite/MySQL** - Database (SQLite for development, MySQL for production)
+| Package | Purpose |
+|---|---|
+| PHP 8.2+ | Server-side language |
+| Laravel 11 | Web framework |
+| Inertia.js (Laravel adapter) | Server-driven SPA bridge |
+| PHPMailer 7 | Transactional email via SMTP |
+| SQLite / MySQL | Database |
 
 ### Frontend
-- **Vue 3** - Progressive JavaScript framework
-- **Inertia.js** - Frontend bridge to Laravel backend
-- **Tailwind CSS** - Utility-first CSS framework
-- **Vite** - Ultra-fast frontend build tool with hot module replacement
-
-### Development Tools
-- **Composer** - PHP package manager
-- **npm/yarn** - JavaScript package manager
-- **PHPUnit** - Testing framework
-- **Laravel Sail** - Docker development environment (optional)
+| Package | Purpose |
+|---|---|
+| Vue 3 (Composition API) | UI framework |
+| Inertia.js (Vue 3 adapter) | Frontend SPA bridge |
+| Tailwind CSS 3 | Utility-first styling |
+| Vite | Build tool & hot reload |
 
 ---
 
 ## 📋 Requirements
 
-Before installation, ensure you have these tools installed on your system:
+### Required
+- **PHP 8.2+** — `php -v`
+- **Composer 2.0+** — [Download](https://getcomposer.org/download/)
+- **Node.js 18+ & npm** — [Download](https://nodejs.org/)
+- **Git** — [Download](https://git-scm.com/)
 
-### Required:
-- **PHP 8.2 or higher** - Check with: `php -v`
-- **Composer 2.0+** - [Download here](https://getcomposer.org/download/)
-- **Node.js 18+ and npm** - [Download here](https://nodejs.org/)
-- **Git** - [Download here](https://git-scm.com/)
-
-### Optional (for production):
-- **MySQL 8.0+** - For production database
-- **Docker** - For containerized deployment
-
-### Verify Installation:
-```bash
-php -v
-composer -v
-node -v
-npm -v
-git -v
-```
+### Optional (production)
+- **MySQL 8.0+** — For production database
+- **SMTP credentials** — Gmail App Password, Mailgun, etc. for email delivery
 
 ---
 
 ## 🚀 Installation & Setup
 
-### Step 1: Clone the Repository
+### Step 1 — Clone
 
 ```bash
 git clone https://github.com/kabu631/pathtosnow.git
 cd pathtosnow
 ```
 
-### Step 2: Install PHP Dependencies
+### Step 2 — Install PHP dependencies
 
 ```bash
 composer install
 ```
 
-This installs all Laravel packages, Inertia.js, and other required PHP libraries.
-
-### Step 3: Install JavaScript Dependencies
+### Step 3 — Install JavaScript dependencies
 
 ```bash
 npm install
 ```
 
-Or if you prefer yarn:
-```bash
-yarn install
-```
-
-### Step 4: Environment Configuration
-
-Copy the example environment file:
+### Step 4 — Environment configuration
 
 ```bash
 cp .env.example .env
 ```
 
-Edit `.env` and configure the following:
+Edit `.env`:
 
 ```env
 APP_NAME="PathToSnow"
@@ -130,10 +126,10 @@ APP_ENV=local
 APP_DEBUG=true
 APP_URL=http://localhost:8000
 
-# Database Configuration (SQLite for Local Development)
+# Database — SQLite for local dev
 DB_CONNECTION=sqlite
 
-# If switching to MySQL:
+# For MySQL:
 # DB_CONNECTION=mysql
 # DB_HOST=127.0.0.1
 # DB_PORT=3306
@@ -141,141 +137,85 @@ DB_CONNECTION=sqlite
 # DB_USERNAME=root
 # DB_PASSWORD=your_password
 
-# Mail Configuration (optional, use 'log' for testing)
-MAIL_DRIVER=log
-MAIL_HOST=127.0.0.1
-MAIL_PORT=1025
-
-# Application Settings
-APP_KEY=  # Will be generated in next step
-APP_LOCALE=en
+# ── Email (PHPMailer reads these) ──────────────────────────────
+MAIL_HOST=smtp.gmail.com
+MAIL_PORT=587
+MAIL_USERNAME=your@gmail.com
+MAIL_PASSWORD=your-app-password   # Gmail: use an App Password, not your login password
+MAIL_ENCRYPTION=tls
+MAIL_FROM_ADDRESS=hello@pathtosnow.com
+MAIL_FROM_NAME="PathToSnow Nepal"
 ```
 
-### Step 5: Generate Application Key
+> **Gmail tip** — Enable 2-Step Verification, then create an App Password at [myaccount.google.com/apppasswords](https://myaccount.google.com/apppasswords). Paste that 16-character code as `MAIL_PASSWORD`.
+
+### Step 5 — Generate app key
 
 ```bash
 php artisan key:generate
 ```
 
-This generates a unique encryption key for your application. You should see: `Application key set successfully.`
-
-### Step 6: Setup Database
-
-#### For SQLite (Recommended for Development):
+### Step 6 — Create SQLite database
 
 ```bash
-# Create SQLite database file
+# Windows
+type nul > database/database.sqlite
+
+# Mac / Linux
 touch database/database.sqlite
 ```
 
-The file is created in `database/` directory automatically.
+_(Skip if using MySQL — create the database in MySQL first.)_
 
-#### For MySQL (Production):
-
-Make sure MySQL is running, then:
-```bash
-# Create database in MySQL first:
-mysql -u root -p -e "CREATE DATABASE pathtosnow CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
-```
-
-### Step 7: Run Database Migrations
+### Step 7 — Run migrations
 
 ```bash
 php artisan migrate
 ```
 
-This creates all database tables. You'll see output like:
-```
-Migrating: 2024_01_01_000001_create_users_table
-Migrated:  2024_01_01_000001_create_users_table (in xxx ms)
-...
-```
-
-### Step 8: Seed the Database (Optional but Recommended)
+### Step 8 — Seed sample data _(optional but recommended)_
 
 ```bash
 php artisan db:seed
 ```
 
-This populates the database with sample data:
-- Travel packages
-- Package types (Adventure, Trekking, etc.)
-- Blog post types
-- Static pages
-- Admin user account
-- Sample products and bookings
+Inserts sample packages, post types, an admin account, and demo products.
 
-**Skip this step if you want an empty database to start fresh.**
-
-### Step 9: Create Storage Link
+### Step 9 — Create storage link
 
 ```bash
 php artisan storage:link
 ```
 
-This creates a symbolic link for file uploads and public storage.
-
-### Step 10: Verify Installation
-
-```bash
-php artisan --version
-```
-
-Should output: `Laravel Framework 11.x.x`
-
 ---
 
 ## 🏃 Running Locally
 
-**Important**: You need to run THREE commands in separate terminal windows:
-
-### Terminal 1: Laravel Development Server
+Run these **two commands in separate terminals**:
 
 ```bash
+# Terminal 1 — Laravel
 php artisan serve
-```
 
-Output will show:
-```
-Laravel development server started: http://127.0.0.1:8000
-```
-
-### Terminal 2: Vite Frontend Server (Hot Reload)
-
-```bash
+# Terminal 2 — Vite (hot reload)
 npm run dev
 ```
 
-Output will show:
-```
-VITE v5.x.x ready in xxxms
-
-➜  Local:   http://localhost:5173/
-```
-
-### Terminal 3: Optional - Run Tests
-
-```bash
-php artisan test
-```
-
-### Access the Application
-
-- **Frontend**: `http://localhost:8000`
-- **Admin Panel**: `/admin` (if you seeded the database)
-- **Vite Dev Server**: `http://localhost:5173` (automatically used by Laravel)
+Then open **http://localhost:8000**.
 
 ---
 
 ## 🔐 Default Admin Credentials
 
-After running seeders, use these credentials to access the admin panel:
+After seeding:
 
-- **URL**: `http://localhost:8000/admin`
-- **Email**: `admin@pathtosnow.com`
-- **Password**: `password`
+| Field | Value |
+|---|---|
+| URL | http://localhost:8000/admin |
+| Email | admin@himalayatrails.com |
+| Password | password |
 
-⚠️ **IMPORTANT**: Change these credentials immediately in production!
+⚠️ **Change these immediately in any non-local environment.**
 
 ---
 
@@ -283,358 +223,242 @@ After running seeders, use these credentials to access the admin panel:
 
 ```
 pathtosnow/
-├── app/                        # Application code
+├── app/
 │   ├── Http/
-│   │   ├── Controllers/        # Route controllers
-│   │   └── Middleware/         # Custom middleware
-│   ├── Models/                 # Eloquent models
-│   │   ├── Package.php         # Travel package model
-│   │   ├── Booking.php         # Booking model
-│   │   ├── Order.php           # Order model (e-commerce)
-│   │   ├── Product.php         # Product model
-│   │   ├── Post.php            # Blog post model
-│   │   ├── GalleryAlbum.php    # Gallery model
-│   │   ├── User.php            # User model
+│   │   ├── Controllers/
+│   │   │   ├── Admin/              # Admin panel controllers
+│   │   │   │   ├── AdminBookingController.php
+│   │   │   │   ├── AdminContactController.php
+│   │   │   │   ├── AdminOrderController.php
+│   │   │   │   ├── AdminUserController.php
+│   │   │   │   └── ...
+│   │   │   ├── Auth/
+│   │   │   │   └── AuthController.php   # Login, register, forgot/reset password
+│   │   │   └── Public/             # Public-facing controllers
+│   │   └── Middleware/
+│   ├── Models/                     # Eloquent models
+│   │   ├── User.php
+│   │   ├── Booking.php
+│   │   ├── Order.php
+│   │   ├── Package.php
 │   │   └── ...
-│   └── Services/               # Business logic
+│   └── Services/
+│       └── MailService.php         # PHPMailer wrapper for all transactional emails
 │
-├── database/                   # Database configuration
-│   ├── migrations/             # Database schema migrations
-│   │   ├── 2024_01_01_000001_create_users_table.php
-│   │   ├── 2024_01_01_000002_create_packages_table.php
-│   │   ├── 2024_01_01_000004_create_bookings_table.php
-│   │   └── ...
-│   ├── seeders/                # Database seeders (sample data)
-│   │   ├── DatabaseSeeder.php
-│   │   ├── StaticPageSeeder.php
-│   │   └── TypesSeeder.php
-│   └── database.sqlite         # SQLite database file
-│
-├── resources/                  # Frontend resources
+├── resources/
 │   ├── css/
-│   │   └── app.css             # Global styles (Tailwind)
-│   ├── js/
-│   │   ├── app.js              # Vue app entry point
-│   │   ├── Components/         # Vue components
-│   │   │   ├── PackageCard.vue
-│   │   │   ├── BookingForm.vue
-│   │   │   └── ...
-│   │   ├── Pages/              # Page components (Inertia)
-│   │   │   ├── Home.vue
-│   │   │   ├── Packages.vue
-│   │   │   └── ...
-│   │   └── Layouts/            # Layout components
-│   │       ├── AppLayout.vue
-│   │       └── AdminLayout.vue
-│   └── views/                  # Blade templates
-│       └── app.blade.php       # Main template
+│   │   └── app.css                 # Global styles + page-loader overlay
+│   └── js/
+│       ├── app.js                  # Vue entry point + Inertia loading overlay
+│       ├── Layouts/
+│       │   ├── AppLayout.vue
+│       │   └── AdminLayout.vue
+│       └── Pages/
+│           ├── Auth/
+│           │   ├── Login.vue
+│           │   ├── ForgotPassword.vue  # Password reset request page
+│           │   └── ResetPassword.vue   # New password form
+│           └── Admin/
+│               ├── Users/
+│               │   ├── Index.vue       # User list with search & role filter
+│               │   └── Edit.vue        # Edit profile + change password
+│               ├── Bookings/
+│               │   └── Show.vue
+│               ├── Orders/
+│               │   └── Show.vue
+│               ├── Contact/
+│               │   └── Show.vue
+│               ├── PackageTypes/
+│               │   └── Form.vue        # Drag-and-drop hero image upload
+│               └── PostTypes/
+│                   └── Form.vue        # Drag-and-drop hero image upload
 │
-├── routes/                     # Route definitions
-│   ├── web.php                 # Web routes
-│   └── api.php                 # API routes (optional)
-│
-├── storage/                    # File uploads & logs
-│   ├── app/
-│   │   └── public/             # User uploads (linked to public/)
-│   ├── framework/
-│   └── logs/                   # Application logs
-│
-├── public/                     # Public assets (web root)
-│   ├── images/                 # Public images
-│   ├── storage/                # Symbolic link to storage/app/public
-│   ├── build/                  # Compiled assets (auto-generated)
-│   │   ├── manifest.json
-│   │   └── assets/
-│   └── index.php               # Application entry point
-│
-├── bootstrap/                  # Bootstrap files
-│   └── app.php
-│
-├── config/                     # Configuration files
-│   ├── app.php
-│   ├── database.php
-│   ├── mail.php
-│   └── ...
-│
-├── vendor/                     # Composer dependencies
-│   └── (all installed packages)
-│
-├── node_modules/               # npm dependencies
-│   └── (all installed packages)
-│
-├── artisan                     # Artisan CLI entry point
-├── composer.json               # PHP dependencies
-├── package.json                # JavaScript dependencies
-├── tailwind.config.js          # Tailwind configuration
-├── vite.config.js              # Vite configuration
-├── .env                        # Environment variables (create from .env.example)
-├── .env.example                # Example environment file
-└── README.md                   # This file
+├── routes/
+│   └── web.php
+├── composer.json
+├── package.json
+├── tailwind.config.js
+├── vite.config.js
+└── .env.example
 ```
 
 ---
 
 ## 🗄️ Database Models
 
-### Travel Management
-- **Package** - Travel packages with details (price, duration, difficulty, etc.)
-- **PackageType** - Types of packages (Trek, Adventure, Wildlife, etc.)
-- **ItineraryDay** - Day-by-day itinerary for each package
-- **Booking** - Customer bookings with status tracking
-- **User** - User profiles and authentication
+### Travel
+| Model | Description |
+|---|---|
+| Package | Travel packages (price, duration, difficulty) |
+| PackageType | Trek, Adventure, Wildlife, etc. |
+| ItineraryDay | Day-by-day itinerary per package |
+| Booking | Customer bookings with status tracking |
 
 ### E-Commerce
-- **Product** - Gear shop products
-- **Order** - Customer orders
-- **OrderItem** - Items within orders
+| Model | Description |
+|---|---|
+| Product | Gear shop items |
+| Order | Customer orders |
+| OrderItem | Line items within an order |
 
-### Content Management
-- **Post** - Blog posts and articles
-- **PostType** - Blog post categories
-- **GalleryAlbum** - Photo albums
-- **GalleryImage** - Individual gallery photos
-- **Slide** - Website slider images
-- **StaticPage** - Customizable pages (About, Terms, etc.)
+### Content
+| Model | Description |
+|---|---|
+| Post | Blog posts and articles |
+| PostType | Blog categories |
+| GalleryAlbum | Photo albums |
+| GalleryImage | Individual gallery photos |
+| Slide | Homepage slider images |
+| StaticPage | About, Terms, Privacy, etc. |
 
 ### Communication
-- **ContactMessage** - Contact form submissions
+| Model | Description |
+|---|---|
+| ContactMessage | Contact form submissions |
+| User | Authentication + role (user / admin) |
+
+---
+
+## 📧 Email Services
+
+All transactional emails are sent via **PHPMailer** through the `App\Services\MailService` class. Configure SMTP in `.env` (see Step 4).
+
+| Trigger | Email sent |
+|---|---|
+| User registers | Welcome email |
+| Forgot password | Password reset link |
+| Booking submitted | Booking confirmation to customer |
+| Booking status changed | Status update notification |
+| Order placed | Order confirmation to customer |
+| Admin replies to contact message | Reply email to visitor |
+
+> If SMTP is not configured, email failures are logged to `storage/logs/laravel.log` and the application continues to work.
+
+---
+
+## 🛡️ Admin Panel
+
+Access at `/admin` (requires `role = admin`).
+
+### User management rules
+- Admins can **edit** any user, including themselves (profile, email, role, password).
+- Admins **cannot delete** their own account — the Delete button is hidden for the currently logged-in user.
+
+### Image uploads
+Hero images for Package Types and Post Types can be uploaded by drag-and-drop or file picker. Images are stored in `storage/app/public/uploads/` and served via the `/storage` symlink.
+
+### Contact replies
+Opening a contact message and clicking **Write a Reply** sends an email directly to the visitor via PHPMailer and automatically marks the message as `replied`.
 
 ---
 
 ## 🔌 Key Routes
 
-Check `routes/web.php` for all routes. Key endpoints:
-
 ```
-GET  /                    - Home page
-GET  /packages            - Browse all packages
-GET  /packages/{id}       - View package details
-POST /bookings            - Create a booking
-GET  /shop                - E-commerce shop
-GET  /shop/{id}           - View product details
-GET  /blog                - Blog/journal posts
-GET  /gallery             - Photo gallery
-GET  /admin               - Admin dashboard (protected)
+GET  /                              Home
+GET  /packages                      Browse packages
+GET  /packages/{id}                 Package detail
+POST /bookings                      Create booking
+GET  /shop                          Gear shop
+GET  /blog                          Blog
+GET  /gallery                       Photo gallery
+GET  /forgot-password               Forgot password form
+POST /forgot-password               Send reset link
+GET  /reset-password/{token}        Reset password form
+POST /reset-password                Save new password
+
+GET  /admin                         Admin dashboard
+GET  /admin/users                   User list
+GET  /admin/users/{id}/edit         Edit user
+PUT  /admin/users/{id}              Update user
+DEL  /admin/users/{id}              Delete user
+GET  /admin/bookings/{id}           Booking detail
+DEL  /admin/bookings/{id}           Delete booking
+GET  /admin/orders/{id}             Order detail
+DEL  /admin/orders/{id}             Delete order
+POST /admin/contact/{id}/reply      Reply to contact message
+DEL  /admin/contact/{id}            Delete message
 ```
 
 ---
 
 ## 📝 Common Commands
 
-### Database
 ```bash
-# Run migrations
+# Database
 php artisan migrate
-
-# Roll back migrations
 php artisan migrate:rollback
-
-# Reset and re-seed database
 php artisan migrate:refresh --seed
-
-# Seed database with sample data
 php artisan db:seed
 
-# Create migration
-php artisan make:migration create_table_name
-```
+# Cache
+php artisan cache:clear
+php artisan config:clear
+php artisan view:clear
 
-### Code Generation
-```bash
-# Create a new model with migration
+# Code generation
 php artisan make:model ModelName -m
-
-# Create a new controller
 php artisan make:controller ControllerName
 
-# Create a model, controller, and migration together
-php artisan make:model ModelName -mcr
-```
-
-### Cache & Configuration
-```bash
-# Clear all cache
-php artisan cache:clear
-
-# Clear config cache
-php artisan config:clear
-
-# Cache configuration (production)
+# Production optimisation
 php artisan config:cache
-
-# Cache routes (production)
 php artisan route:cache
-```
+php artisan view:cache
+npm run build
 
-### Development
-```bash
-# Open Laravel Tinker (interactive shell)
-php artisan tinker
-
-# View all routes
+# Utilities
 php artisan route:list
-
-# Run tests
-php artisan test
-
-# View current environment
+php artisan tinker
 php artisan env
 ```
-
-### Maintenance
-```bash
-# Enable maintenance mode
-php artisan down
-
-# Disable maintenance mode
-php artisan up
-
-# Optimize application
-php artisan optimize
-```
-
----
-
-## 🎨 Frontend Development
-
-### Vue 3 Components
-- Located in `resources/js/Components/`
-- Use Composition API for modern Vue patterns
-- Import and register in parent components
-
-### Tailwind CSS
-- Configuration: `tailwind.config.js`
-- Main styles: `resources/css/app.css`
-- Utility-first approach for styling
-
-### Hot Module Replacement
-When running `npm run dev`:
-- Vue component changes appear instantly
-- CSS changes apply without page reload
-- JavaScript changes reload the page
-
-### Build for Production
-```bash
-npm run build
-```
-
-Generates optimized assets in `public/build/`
 
 ---
 
 ## 🐛 Troubleshooting
 
-### Issue: "No application encryption key has been specified"
-```bash
-php artisan key:generate
-```
-
-### Issue: Database connection error
-**Solution**:
-1. Verify `.env` database settings
-2. Check if MySQL/SQLite is accessible
-3. For SQLite: `touch database/database.sqlite`
-
-```bash
-# Test database connection
-php artisan tinker
->>> DB::connection()->getPdo();
-```
-
-### Issue: Vite dev server not found
-**Solution**:
-- Run `npm run dev` in separate terminal
-- Clear browser cache (Ctrl+Shift+Del)
-- Restart both Laravel and Vite servers
-
-### Issue: "Class not found" error
-**Solution**:
-```bash
-composer dump-autoload
-```
-
-### Issue: Permission denied errors
-**Solution** (Linux/Mac):
-```bash
-chmod -R 775 storage bootstrap/cache
-chmod -R 775 database
-```
-
-### Issue: npm install fails
-**Solution**:
-```bash
-rm -rf node_modules package-lock.json
-npm cache clean --force
-npm install
-```
-
-### Issue: Migrations fail
-**Solution**:
-```bash
-# Check migration status
-php artisan migrate:status
-
-# Refresh and seed
-php artisan migrate:refresh --seed
-```
-
-### Issue: Assets not loading (CSS/JS)
-**Solution**:
-```bash
-# Rebuild frontend
-npm run dev
-
-# Or for production build
-npm run build
-
-# Clear Laravel cache
-php artisan cache:clear
-```
-
-### Common Error Messages:
-
-| Error | Solution |
-|-------|----------|
-| `SQLSTATE[HY000]: General error` | Ensure database file exists: `touch database/database.sqlite` |
-| `Port 8000 already in use` | Use different port: `php artisan serve --port=8001` |
-| `Node modules not installed` | Run `npm install` |
-| `Vite not compiling` | Kill and restart `npm run dev` |
-| `Migrations pending` | Run `php artisan migrate` |
+| Problem | Fix |
+|---|---|
+| `No application encryption key` | `php artisan key:generate` |
+| SQLite not found | `touch database/database.sqlite` (Mac/Linux) or `type nul > database/database.sqlite` (Windows) |
+| Vite dev server not found | Run `npm run dev` in a separate terminal |
+| `Class not found` | `composer dump-autoload` |
+| Emails not sending | Check `.env` SMTP settings; errors go to `storage/logs/laravel.log` |
+| Permission denied (Linux/Mac) | `chmod -R 775 storage bootstrap/cache` |
+| npm install fails | `rm -rf node_modules && npm cache clean --force && npm install` |
+| Port 8000 in use | `php artisan serve --port=8001` |
 
 ---
 
 ## 📦 Deployment
 
-### Build for Production
-
 ```bash
-# Compile frontend assets
+# 1 — Build frontend
 npm run build
 
-# Optimize Laravel
+# 2 — Optimise Laravel
 php artisan config:cache
 php artisan route:cache
 php artisan view:cache
+
+# 3 — Run migrations
+php artisan migrate --force
 ```
 
-### Environment Variables
-
 Update `.env` for production:
+
 ```env
 APP_ENV=production
 APP_DEBUG=false
 APP_URL=https://your-domain.com
 ```
 
-### Web Server Configuration
+### Nginx config
 
-#### Nginx (Recommended)
 ```nginx
 server {
     listen 80;
     server_name your-domain.com;
     root /path/to/pathtosnow/public;
-
     index index.php;
 
     location / {
@@ -643,82 +467,44 @@ server {
 
     location ~ \.php$ {
         fastcgi_pass unix:/var/run/php/php8.2-fpm.sock;
-        fastcgi_index index.php;
         fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
         include fastcgi_params;
     }
 }
 ```
 
-#### Apache
-Ensure `.htaccess` is properly configured in `public/` directory.
-
-### Database Migration on Production
-
-```bash
-# Backup database first!
-php artisan migrate --force
-```
-
-### Recommended Hosting
-- **Shared Hosting**: Laravel Forge, A2Hosting
-- **VPS**: DigitalOcean, Linode, Vultr
-- **Cloud**: AWS, Google Cloud, Azure
-- **Docker**: Deploy with Docker Compose
-
 ---
 
-## 📚 Documentation & Resources
+## 📚 Resources
 
-- [Laravel Documentation](https://laravel.com/docs/11.x/)
-- [Vue 3 Documentation](https://vuejs.org/guide/introduction.html)
-- [Inertia.js Documentation](https://inertiajs.com/)
-- [Tailwind CSS Documentation](https://tailwindcss.com/docs)
-- [Vite Documentation](https://vitejs.dev/)
+- [Laravel 11 Docs](https://laravel.com/docs/11.x/)
+- [Vue 3 Docs](https://vuejs.org/)
+- [Inertia.js Docs](https://inertiajs.com/)
+- [PHPMailer Docs](https://github.com/PHPMailer/PHPMailer)
+- [Tailwind CSS Docs](https://tailwindcss.com/docs)
 
 ---
 
 ## 🤝 Contributing
 
-We welcome contributions! Here's how:
-
-1. **Fork** the repository
-2. **Create** a feature branch: `git checkout -b feature/amazing-feature`
-3. **Commit** your changes: `git commit -m 'Add amazing feature'`
-4. **Push** to the branch: `git push origin feature/amazing-feature`
-5. **Open** a Pull Request
-
-Please follow these guidelines:
-- Write clear commit messages
-- Test your changes locally
-- Update documentation if needed
-- Follow Laravel & Vue 3 best practices
+1. Fork the repository
+2. Create a branch: `git checkout -b feature/my-feature`
+3. Commit: `git commit -m 'Add my feature'`
+4. Push: `git push origin feature/my-feature`
+5. Open a Pull Request
 
 ---
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+MIT — see the [LICENSE](LICENSE) file.
 
 ---
 
 ## 👨‍💻 Author
 
-**Kabu** - [GitHub Profile](https://github.com/kabu631)
-
----
-
-## 📞 Support & Contact
-
-For issues, feature requests, or questions:
-- Open an issue on [GitHub](https://github.com/kabu631/pathtosnow/issues)
-- Review existing documentation above
-
----
-
-## 🏔️ Special Thanks
+**Kabu** — [github.com/kabu631](https://github.com/kabu631)
 
 Built with ❤️ in Kathmandu for Nepal's adventure community.
 
-**Last Updated**: April 2026
-**Version**: 1.0.0
+**Last updated**: April 2026 | **Version**: 1.1.0
