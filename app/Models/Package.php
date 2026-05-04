@@ -9,8 +9,8 @@ use Illuminate\Support\Str;
 class Package extends Model
 {
     protected $fillable = [
-        'type','name','slug','location','region','short_description','description',
-        'cover_image','gallery','price_per_person','price_group','duration_days',
+        'country_id','type','name','slug','location','region','short_description','description',
+        'cover_image','gallery','price_per_person','price_nrs','price_group','duration_days',
         'duration_nights','min_group_size','max_group_size','difficulty','max_altitude_m',
         'best_season','start_point','end_point','highlights','included','excluded',
         'requirements','faqs','featured','active','views','meta_title','meta_description',
@@ -20,7 +20,7 @@ class Package extends Model
         'gallery' => 'array', 'highlights' => 'array', 'included' => 'array',
         'excluded' => 'array', 'requirements' => 'array', 'faqs' => 'array',
         'featured' => 'boolean', 'active' => 'boolean',
-        'price_per_person' => 'decimal:2', 'price_group' => 'decimal:2',
+        'price_per_person' => 'decimal:2', 'price_nrs' => 'decimal:2', 'price_group' => 'decimal:2',
     ];
 
     // Type labels for display
@@ -45,6 +45,11 @@ class Package extends Model
     public function itineraryDays()
     {
         return $this->hasMany(ItineraryDay::class)->orderBy('day_number');
+    }
+
+    public function country()
+    {
+        return $this->belongsTo(Country::class);
     }
 
     public function bookings()
@@ -73,7 +78,7 @@ class Package extends Model
             ->where('id', '!=', $this->id)
             ->inRandomOrder()
             ->limit($limit)
-            ->get(['id','type','name','slug','location','price_per_person','duration_days','cover_image','difficulty']);
+            ->get(['id','type','name','slug','location','price_per_person','price_nrs','duration_days','cover_image','difficulty']);
     }
 
     public function incrementViews(): void { $this->increment('views'); }

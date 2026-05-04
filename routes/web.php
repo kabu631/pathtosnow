@@ -22,6 +22,9 @@ Route::prefix('packages')->name('packages.')->group(function () {
     Route::get('/{slug}', [PackageController::class, 'show'])->name('show');
 });
 
+// Abroad
+Route::get('/abroad/{slug}', [\App\Http\Controllers\Public\AbroadController::class, 'show'])->name('abroad.show');
+
 // Bookings
 Route::prefix('book')->name('bookings.')->group(function () {
     Route::get('/{package:slug}', [BookingController::class, 'create'])->name('create');
@@ -112,6 +115,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     });
 
     Route::resource('package-types', AdminPackageTypeController::class)->except(['show']);
+    Route::resource('countries', \App\Http\Controllers\Admin\AdminCountryController::class)->except(['show']);
 
     // Bookings
     Route::prefix('bookings')->name('bookings.')->group(function () {

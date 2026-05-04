@@ -26,7 +26,7 @@ router.on('finish', () => {
 })
 
 createInertiaApp({
-    title: (title) => title ? `${title} | TrekBazar Nepal` : 'TrekBazar — Nepal Travel & Gear',
+    title: (title) => title ? `${title} | PathToSnow Nepal` : 'PathToSnow — Nepal Travel & Gear',
     resolve: (name) => resolvePageComponent(`./Pages/${name}.vue`, import.meta.glob('./Pages/**/*.vue')),
     setup({ el, App, props, plugin }) {
         return createApp({ render: () => h(App, props) }).use(plugin).mount(el)

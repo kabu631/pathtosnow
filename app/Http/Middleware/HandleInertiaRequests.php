@@ -37,15 +37,18 @@ class HandleInertiaRequests extends Middleware
                 : 0,
             // Dynamic package types for navbar
             'navPackageTypes' => cache()->remember('nav_pkg_types', 300, fn() =>
-                \App\Models\PackageType::active()->orderBy('sort_order')->get(['name', 'slug', 'icon_emoji'])
+                \App\Models\PackageType::active()->orderBy('sort_order')->get(['name', 'slug', 'type_key', 'icon_emoji'])
             ),
             // Dynamic post types for navbar
             'navPostTypes' => cache()->remember('nav_post_types', 300, fn() =>
                 \App\Models\PostType::active()->orderBy('sort_order')->get(['name', 'slug', 'icon_emoji'])
             ),
-            // Keep counts for legacy components temporarily
+            // Dynamic countries for Abroad dropdown
+            'navCountries' => cache()->remember('nav_countries', 300, fn() =>
+                \App\Models\Country::active()->orderBy('name')->get(['name', 'slug'])
+            ),
             'packageTypeCounts' => cache()->remember('pkg_type_counts', 300, fn() =>
-                Booking::get(['id'])->count() > 0 ? Package::active()->get(['type'])->groupBy('type')->map->count() : []
+                Package::active()->get(['type'])->groupBy('type')->map->count()
             ),
         ];
     }

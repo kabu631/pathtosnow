@@ -29,6 +29,14 @@
       <Link :href="r('admin.packages.create')" class="admin-link-sub">+ New package</Link>
       <Link :href="r('admin.package-types.index')" class="admin-link-sub">Package Types</Link>
 
+      <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider px-3 pt-5 pb-2">Abroad</p>
+      <Link :href="r('admin.countries.index')" :class="['admin-link', active('/admin/countries')]">
+        <span class="text-lg">🌍</span> Countries
+      </Link>
+      <Link :href="r('admin.countries.create')" class="admin-link-sub">+ New country</Link>
+      <Link href="/admin/packages?abroad=1" :class="['admin-link-sub', $page.url.includes('abroad=1') && !$page.url.includes('create') ? 'text-emerald-600 font-medium' : '']">Abroad Packages</Link>
+      <Link href="/admin/packages/create?abroad=1" :class="['admin-link-sub', $page.url.includes('create?abroad=1') ? 'text-emerald-600 font-medium' : '']">+ New abroad package</Link>
+
       <Link :href="r('admin.bookings.index')" :class="['admin-link', active('/admin/bookings')]">
         <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
         Bookings
@@ -148,6 +156,8 @@ function r(name) {
     'admin.packages.index': '/admin/packages',
     'admin.packages.create':'/admin/packages/create',
     'admin.package-types.index': '/admin/package-types',
+    'admin.countries.index': '/admin/countries',
+    'admin.countries.create': '/admin/countries/create',
     'admin.bookings.index': '/admin/bookings',
     'admin.slides.index':   '/admin/slides',
     'admin.posts.index':    '/admin/posts',

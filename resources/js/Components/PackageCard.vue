@@ -36,7 +36,7 @@
         <div class="flex items-center justify-between pt-3 border-t border-slate-100">
             <div>
                 <span class="text-xs text-slate-400">From </span>
-                <span class="font-bold text-emerald-700 text-base">${{ Number(package_.price_per_person).toFixed(0) }}</span>
+                <span class="font-bold text-emerald-700 text-base">NRs {{ Number(package_.price_per_person).toLocaleString() }}</span>
                 <span class="text-xs text-slate-400">/person</span>
             </div>
             <span v-if="package_.difficulty" :class="`diff-${package_.difficulty}`" class="capitalize">

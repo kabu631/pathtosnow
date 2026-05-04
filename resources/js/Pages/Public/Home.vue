@@ -111,7 +111,7 @@
     </div>
   </section>
 
-  <!-- Why TrekBazar -->
+  <!-- Why PathToSnow -->
   <section class="py-16 bg-white" aria-labelledby="why-heading">
     <div class="container-main">
       <div class="text-center mb-12">

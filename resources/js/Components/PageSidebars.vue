@@ -114,7 +114,7 @@ const blogLinks = [
         <div class="text-2xl mb-2">🏔</div>
         <p class="text-xs font-bold mb-1">Plan your trek</p>
         <p class="text-xs text-emerald-100 mb-3">Talk to a local guide</p>
-        <a href="mailto:hello@trekbazar.com" class="block bg-white text-emerald-700 text-xs font-bold py-2 rounded-xl hover:bg-emerald-50 transition-colors">
+        <a href="mailto:hello@pathtosnow.com" class="block bg-white text-emerald-700 text-xs font-bold py-2 rounded-xl hover:bg-emerald-50 transition-colors">
           Contact Us
         </a>
       </div>

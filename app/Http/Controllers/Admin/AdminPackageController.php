@@ -5,19 +5,27 @@ use App\Http\Controllers\Controller;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 use App\Models\Package;
 use App\Models\PackageType;
+use App\Models\Country;
 
 class AdminPackageController extends Controller
 {
     public function index()
     {
+        $isAbroad = request()->boolean('abroad');
+
         return Inertia::render('Admin/Packages/Index', [
             'packages' => Package::when(request('type'), fn($q, $t) => $q->ofType($t))
                 ->when(request('q'), fn($q, $s) => $q->where('name', 'like', "%$s%"))
+                ->when($isAbroad, fn($q) => $q->whereNotNull('country_id'))
+                ->when(!$isAbroad, fn($q) => $q->whereNull('country_id'))
+                ->with('country:id,name')
                 ->withCount('bookings')
                 ->orderBy('type')->latest()->paginate(15)->withQueryString(),
             'types' => PackageType::orderBy('sort_order')->pluck('name', 'type_key'),
+            'is_abroad' => $isAbroad,
         ]);
     }
 
@@ -26,6 +34,8 @@ class AdminPackageController extends Controller
         return Inertia::render('Admin/Packages/Form', [
             'package' => null,
             'types'   => PackageType::active()->orderBy('sort_order')->pluck('name', 'type_key'),
+            'countries' => Country::active()->orderBy('name')->pluck('name', 'id'),
+            'is_abroad' => request()->boolean('abroad'),
         ]);
     }
 
@@ -41,6 +51,8 @@ class AdminPackageController extends Controller
         return Inertia::render('Admin/Packages/Form', [
             'package' => $package->load('itineraryDays'),
             'types'   => PackageType::active()->orderBy('sort_order')->pluck('name', 'type_key'),
+            'countries' => Country::active()->orderBy('name')->pluck('name', 'id'),
+            'is_abroad' => $package->country_id !== null,
         ]);
     }
 
@@ -65,7 +77,8 @@ class AdminPackageController extends Controller
     private function validatePkg(Request $req, ?Package $package = null): array
     {
         $data = $req->validate([
-            'type'              => 'required|in:adventure,valley_visit,trekking,national_park,wildlife_reserve,lake',
+            'type'              => ['required', Rule::in(PackageType::pluck('type_key')->toArray())],
+            'country_id'        => 'nullable|exists:countries,id',
             'name'              => 'required|string|max:255',
             'slug'              => 'nullable|string|max:255',
             'location'          => 'required|string|max:255',
@@ -75,6 +88,7 @@ class AdminPackageController extends Controller
             'cover_image'       => 'nullable|string',
             'gallery'           => 'nullable|array',
             'price_per_person'  => 'required|numeric|min:0',
+            'price_nrs'         => 'nullable|numeric|min:0',
             'price_group'       => 'nullable|numeric|min:0',
             'duration_days'     => 'required|integer|min:1',
             'duration_nights'   => 'nullable|integer',

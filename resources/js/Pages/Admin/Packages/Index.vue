@@ -1,13 +1,15 @@
 <template>
 <!-- resources/js/Pages/Admin/Packages/Index.vue -->
-<AdminLayout title="Packages">
+<AdminLayout :title="is_abroad ? 'Abroad Packages' : 'Packages'">
     <template #actions>
-        <a href="/admin/packages/create" class="btn-orange text-xs py-2 px-3">+ New package</a>
+        <a :href="is_abroad ? '/admin/packages/create?abroad=1' : '/admin/packages/create'" class="btn-orange text-xs py-2 px-3">
+            + New {{ is_abroad ? 'abroad ' : '' }}package
+        </a>
     </template>
 
     <div class="mb-4 flex flex-wrap gap-3">
         <input v-model="search" @input="filter" placeholder="Search packages..." class="input text-sm max-w-xs"/>
-        <select v-model="typeF" @change="filter" class="input text-sm w-auto">
+        <select v-if="!is_abroad" v-model="typeF" @change="filter" class="input text-sm w-auto">
             <option value="">All types</option>
             <option v-for="(label,type) in types" :key="type" :value="type">{{ label }}</option>
         </select>
@@ -62,10 +64,17 @@
 import { ref } from 'vue'
 import { router } from '@inertiajs/vue3'
 import AdminLayout from '@/Layouts/AdminLayout.vue'
-const props = defineProps({ packages: Object, types: Object })
+const props = defineProps({ packages: Object, types: Object, is_abroad: Boolean })
 const search = ref(''), typeF = ref('')
 let t = null
-function filter() { clearTimeout(t); t = setTimeout(() => router.get('/admin/packages', { q: search.value||undefined, type: typeF.value||undefined }, { preserveState:true, replace:true }), 400) }
+function filter() { 
+    clearTimeout(t); 
+    t = setTimeout(() => router.get('/admin/packages', { 
+        q: search.value||undefined, 
+        type: typeF.value||undefined,
+        abroad: props.is_abroad ? '1' : undefined
+    }, { preserveState:true, replace:true }), 400) 
+}
 function toggle(pkg) { router.patch(`/admin/packages/${pkg.id}/toggle`) }
 function del(pkg) { if(confirm(`Delete "${pkg.name}"?`)) router.delete(`/admin/packages/${pkg.id}`) }
 </script>

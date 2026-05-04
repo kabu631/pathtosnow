@@ -65,6 +65,22 @@
           </div>
 
 
+          <!-- Abroad dropdown -->
+          <div class="relative group">
+            <button class="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-slate-700 hover:text-emerald-700 hover:bg-emerald-50 rounded-lg transition-colors">
+              🌍 Abroad
+              <svg class="w-3.5 h-3.5 text-slate-400 group-hover:rotate-180 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+              </svg>
+            </button>
+            <div class="absolute top-full left-0 mt-2 w-52 bg-white border border-slate-200 rounded-2xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 p-2">
+              <Link v-for="c in abroadLinks" :key="c.href" :href="c.href"
+                    class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-emerald-50 text-sm text-slate-700 hover:text-emerald-700 font-medium transition-colors">
+                {{ c.label }}
+              </Link>
+            </div>
+          </div>
+
           <Link href="/blog" class="px-3 py-2 text-sm font-medium text-slate-700 hover:text-emerald-700 hover:bg-emerald-50 rounded-lg transition-colors">Blog</Link>
           <Link href="/gallery" class="px-3 py-2 text-sm font-medium text-slate-700 hover:text-emerald-700 hover:bg-emerald-50 rounded-lg transition-colors">Gallery</Link>
           <Link href="/shop" class="px-3 py-2 text-sm font-medium text-slate-700 hover:text-emerald-700 hover:bg-emerald-50 rounded-lg transition-colors">Gear Shop</Link>
@@ -284,7 +300,7 @@ const packageTypeMap = computed(() => {
   const types = page.props.navPackageTypes || []
   const map = {}
   types.forEach(t => {
-    map[t.slug] = {
+    map[t.type_key] = {
       href: `/packages/type/${t.slug}`,
       label: t.name,
       icon: t.icon_emoji,
@@ -301,6 +317,14 @@ const guideLinks = computed(() => {
     href: `/travel-guide/type/${t.slug}`,
     label: t.name,
     icon: t.icon_emoji,
+  }))
+})
+
+const abroadLinks = computed(() => {
+  const countries = page.props.navCountries || []
+  return countries.map(c => ({
+    href: `/abroad/${c.slug}`,
+    label: c.name,
   }))
 })
 </script>

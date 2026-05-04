@@ -40,7 +40,7 @@
       <span>/</span>
       <Link href="/packages" class="hover:text-emerald-600">Packages</Link>
       <span>/</span>
-      <Link :href="`/packages/${pkg.type.replace('_','-')}`" class="hover:text-emerald-600 capitalize">{{ typeLabel }}</Link>
+      <Link :href="`/packages/type/${pkg.type.replace(/_/g,'-')}`" class="hover:text-emerald-600 capitalize">{{ typeLabel }}</Link>
       <span>/</span>
       <span class="text-slate-800 font-medium truncate">{{ pkg.name }}</span>
     </div>
@@ -181,7 +181,7 @@
         <div class="border border-slate-200 rounded-2xl shadow-sm bg-white sticky top-20 overflow-hidden">
           <!-- Price header -->
           <div class="bg-gradient-to-br from-emerald-600 to-sky-700 p-5 text-white text-center">
-            <p class="text-4xl font-black">${{ Number(pkg.price_per_person).toFixed(0) }}</p>
+            <p class="text-4xl font-black">NRs {{ Number(pkg.price_per_person).toLocaleString() }}</p>
             <p class="text-emerald-100 text-sm mt-1">per person</p>
             <div class="flex justify-center gap-4 mt-3 text-xs text-emerald-100">
               <span>📅 {{ pkg.duration_days }} days</span>
@@ -247,7 +247,7 @@ const typeLabel    = computed(() => typeLabelMap[pkg.value.type] || pkg.value.ty
 
 const quickFacts = computed(() => [
   { icon: '📅', label: 'Duration',   value: `${pkg.value.duration_days} days` },
-  { icon: '💵', label: 'From price', value: `$${Number(pkg.value.price_per_person).toFixed(0)}` },
+  { icon: '💵', label: 'From price', value: `NRs ${Number(pkg.value.price_per_person).toLocaleString()}` },
   { icon: '👥', label: 'Group size', value: `${pkg.value.min_group_size}–${pkg.value.max_group_size}` },
   { icon: '📍', label: 'Location',   value: pkg.value.location?.split(',')[0] || '' },
 ])
