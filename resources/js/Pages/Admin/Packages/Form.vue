@@ -11,17 +11,18 @@
             <h2 class="text-sm font-semibold text-gray-900 border-b border-gray-100 pb-3">Basic information</h2>
             <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 <div>
-                    <label class="label">Package type *</label>
+                    <label class="label">Package type{{ is_abroad ? '' : ' *' }}</label>
                     <select v-model="form.type" :class="ic('type')">
-                        <option value="">Select type</option>
+                        <option value="">{{ is_abroad ? 'Select type (optional)' : 'Select type' }}</option>
                         <option v-for="(label, type) in types" :key="type" :value="type">{{ label }}</option>
                     </select>
                     <p v-if="form.errors.type" class="text-xs text-red-500 mt-1">{{ form.errors.type }}</p>
                 </div>
                 <div>
-                    <label class="label">Abroad Country (Optional)</label>
+                    <label class="label">Country *</label>
                     <select v-model="form.country_id" :class="ic('country_id')">
-                        <option :value="null">None (Nepal only)</option>
+                        <option v-if="!is_abroad" :value="null">None (Nepal only)</option>
+                        <option v-if="is_abroad" :value="null" disabled>Select a country</option>
                         <option v-for="(name, id) in countries" :key="id" :value="id">{{ name }}</option>
                     </select>
                     <p v-if="form.errors.country_id" class="text-xs text-red-500 mt-1">{{ form.errors.country_id }}</p>

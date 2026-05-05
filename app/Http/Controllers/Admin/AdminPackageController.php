@@ -12,6 +12,16 @@ use App\Models\Country;
 
 class AdminPackageController extends Controller
 {
+    const ABROAD_TYPES = [
+        'tour'        => 'Tour',
+        'adventure'   => 'Adventure',
+        'cultural'    => 'Cultural',
+        'pilgrimage'  => 'Pilgrimage',
+        'wildlife'    => 'Wildlife',
+        'cruise'      => 'Cruise',
+        'trekking'    => 'Trekking',
+    ];
+
     public function index()
     {
         $isAbroad = request()->boolean('abroad');
@@ -31,11 +41,12 @@ class AdminPackageController extends Controller
 
     public function create()
     {
+        $isAbroad = request()->boolean('abroad');
         return Inertia::render('Admin/Packages/Form', [
-            'package' => null,
-            'types'   => PackageType::active()->orderBy('sort_order')->pluck('name', 'type_key'),
-            'countries' => Country::active()->orderBy('name')->pluck('name', 'id'),
-            'is_abroad' => request()->boolean('abroad'),
+            'package'    => null,
+            'types'      => $isAbroad ? self::ABROAD_TYPES : PackageType::active()->orderBy('sort_order')->pluck('name', 'type_key'),
+            'countries'  => Country::active()->orderBy('name')->pluck('name', 'id'),
+            'is_abroad'  => $isAbroad,
         ]);
     }
 
@@ -48,11 +59,12 @@ class AdminPackageController extends Controller
 
     public function edit(Package $package)
     {
+        $isAbroad = $package->country_id !== null;
         return Inertia::render('Admin/Packages/Form', [
-            'package' => $package->load('itineraryDays'),
-            'types'   => PackageType::active()->orderBy('sort_order')->pluck('name', 'type_key'),
+            'package'   => $package->load('itineraryDays'),
+            'types'     => $isAbroad ? self::ABROAD_TYPES : PackageType::active()->orderBy('sort_order')->pluck('name', 'type_key'),
             'countries' => Country::active()->orderBy('name')->pluck('name', 'id'),
-            'is_abroad' => $package->country_id !== null,
+            'is_abroad' => $isAbroad,
         ]);
     }
 
@@ -76,9 +88,14 @@ class AdminPackageController extends Controller
 
     private function validatePkg(Request $req, ?Package $package = null): array
     {
+        $isAbroad = !empty($req->country_id);
+        $typeRule = $isAbroad
+            ? ['nullable', Rule::in(array_keys(self::ABROAD_TYPES))]
+            : ['required', Rule::in(PackageType::pluck('type_key')->toArray())];
+
         $data = $req->validate([
-            'type'              => ['required', Rule::in(PackageType::pluck('type_key')->toArray())],
-            'country_id'        => 'nullable|exists:countries,id',
+            'type'              => $typeRule,
+            'country_id'        => $isAbroad ? 'required|exists:countries,id' : 'nullable|exists:countries,id',
             'name'              => 'required|string|max:255',
             'slug'              => 'nullable|string|max:255',
             'location'          => 'required|string|max:255',

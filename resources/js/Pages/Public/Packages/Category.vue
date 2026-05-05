@@ -63,7 +63,7 @@ watch([difficulty, sort], search)
     <!-- Three-column layout -->
     <div class="container-main py-8">
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-7">
-        <aside class="lg:col-span-3"><LeftSidebar /></aside>
+        <aside class="lg:col-span-3"><LeftSidebar :active-type="packageType.slug" /></aside>
 
         <main class="lg:col-span-6">
           <!-- Filters -->
