@@ -3,6 +3,9 @@ import { Head, Link, useForm, usePage } from '@inertiajs/vue3'
 import AppLayout from '@/Layouts/AppLayout.vue'
 import { computed } from 'vue'
 
+const page = usePage()
+const isAdmin = computed(() => page.props.auth?.user?.role === 'admin')
+
 const form = useForm({
   name:    '',
   email:   '',
@@ -83,7 +86,20 @@ const contactInfo = [
 
         <!-- Contact Form -->
         <div class="lg:col-span-3">
-          <div class="bg-white rounded-3xl shadow-sm border border-slate-200 p-8 md:p-10">
+
+          <!-- Admin notice: hide form for admins -->
+          <div v-if="isAdmin"
+               class="bg-amber-50 border border-amber-200 rounded-3xl p-10 flex flex-col items-center text-center gap-4">
+            <span class="text-5xl">🔒</span>
+            <h2 class="text-2xl font-black text-amber-900">Admin Account</h2>
+            <p class="text-amber-800 text-sm max-w-sm">
+              You are logged in as an administrator. Admins cannot submit contact messages — you manage them.
+              View all incoming messages from the
+              <a href="/admin/contact" class="underline font-semibold">Admin Contact Panel</a>.
+            </p>
+          </div>
+
+          <div v-else class="bg-white rounded-3xl shadow-sm border border-slate-200 p-8 md:p-10">
 
             <h2 class="text-2xl font-black text-slate-900 mb-2">Send Us a Message</h2>
             <p class="text-slate-500 mb-8 text-sm">Fill out the form and we'll get back to you within 24 hours.</p>

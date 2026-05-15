@@ -15,6 +15,10 @@ class ContactController extends Controller
 
     public function store(Request $req)
     {
+        if (auth()->check() && auth()->user()->isAdmin()) {
+            return back()->with('error', 'Admins cannot submit contact messages.');
+        }
+
         $data = $req->validate([
             'name'    => 'required|string|max:120',
             'email'   => 'required|email|max:200',

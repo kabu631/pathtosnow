@@ -189,8 +189,19 @@
             </div>
           </div>
 
-          <div class="p-5">
-            <Link :href="`/book/${pkg.slug}`" class="btn-primary w-full mb-4">
+            <div class="p-5">
+            <!-- Admin notice instead of booking button -->
+            <div v-if="isAdmin"
+                 class="mb-4 flex items-start gap-3 bg-amber-50 border border-amber-200 rounded-xl px-4 py-3">
+              <span class="text-xl flex-shrink-0">🔒</span>
+              <div>
+                <p class="text-sm font-bold text-amber-800">Admin View</p>
+                <p class="text-xs text-amber-700 mt-0.5">Admins cannot book packages. Manage this package from the
+                  <a href="/admin/packages" class="underline font-semibold">Admin Panel</a>.
+                </p>
+              </div>
+            </div>
+            <Link v-else :href="`/book/${pkg.slug}`" class="btn-primary w-full mb-4">
               Book this package →
             </Link>
 
@@ -234,13 +245,15 @@
 
 <script setup>
 import { ref, computed } from 'vue'
-import { Head, Link } from '@inertiajs/vue3'
+import { Head, Link, usePage } from '@inertiajs/vue3'
 import AppLayout from '@/Layouts/AppLayout.vue'
 import PackageCard from '@/Components/PackageCard.vue'
 
 const props = defineProps({ package: Object, related: Array, relatedPosts: Array })
 const pkg = computed(() => props.package)
 const openDay = ref(null)
+
+const isAdmin = computed(() => usePage().props.auth?.user?.role === 'admin')
 
 const typeLabelMap = { adventure:'Adventure', valley_visit:'Valley Visit', trekking:'Trekking', national_park:'National Park', wildlife_reserve:'Wildlife Reserve', lake:'Lake' }
 const typeLabel    = computed(() => typeLabelMap[pkg.value.type] || pkg.value.type)

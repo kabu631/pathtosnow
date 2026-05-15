@@ -12,6 +12,12 @@ class BookingController extends Controller
     public function create(Package $package)
     {
         abort_if(!$package->active, 404);
+
+        if (auth()->check() && auth()->user()->isAdmin()) {
+            return redirect()->route('admin.dashboard')
+                ->with('error', 'Admins cannot book packages.');
+        }
+
         return Inertia::render('Public/Packages/Booking', [
             'package' => $package->only('id','name','slug','type','location','price_per_person',
                 'duration_days','cover_image','min_group_size','max_group_size','included','excluded'),
@@ -21,6 +27,11 @@ class BookingController extends Controller
 
     public function store(Request $req, Package $package)
     {
+        if (auth()->check() && auth()->user()->isAdmin()) {
+            return redirect()->route('admin.dashboard')
+                ->with('error', 'Admins cannot book packages.');
+        }
+
         $data = $req->validate([
             'customer_name'           => 'required|string|max:255',
             'customer_email'          => 'required|email',
