@@ -15,43 +15,79 @@
     </div>
 
     <div class="grid md:grid-cols-3 gap-6">
-        <!-- Recent bookings -->
-        <div class="md:col-span-2 bg-white rounded-xl border border-gray-200 p-5">
-            <div class="flex justify-between items-center mb-4">
-                <h2 class="font-semibold text-gray-900 text-sm">Recent bookings</h2>
-                <a href="/admin/bookings" class="text-xs text-[#E85D26] hover:underline">View all</a>
+        <!-- Recent bookings & quotes -->
+        <div class="md:col-span-2 space-y-6">
+            <div class="bg-white rounded-xl border border-gray-200 p-5">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="font-semibold text-gray-900 text-sm">Recent bookings</h2>
+                    <a href="/admin/bookings?quote=0" class="text-xs text-[#E85D26] hover:underline">View all</a>
+                </div>
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="text-xs text-gray-400 border-b border-gray-100">
+                            <th class="text-left pb-2 font-medium">Ref</th>
+                            <th class="text-left pb-2 font-medium">Customer</th>
+                            <th class="text-left pb-2 font-medium hidden md:table-cell">Package</th>
+                            <th class="text-left pb-2 font-medium">Total</th>
+                            <th class="text-left pb-2 font-medium">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-50">
+                        <tr v-for="b in recentBookings" :key="b.id">
+                            <td class="py-2.5">
+                                <a :href="`/admin/bookings/${b.id}`" class="font-mono text-xs text-[#E85D26] hover:underline">
+                                    {{ b.booking_reference }}
+                                </a>
+                            </td>
+                            <td class="py-2.5 text-gray-700 text-xs">{{ b.customer_name }}</td>
+                            <td class="py-2.5 text-gray-500 text-xs hidden md:table-cell">{{ b.package?.name ?? b.custom_package_name }}</td>
+                            <td class="py-2.5 font-medium text-xs">{{ b.package_id ? `$${Number(b.total_price).toFixed(0)}` : 'TBD' }}</td>
+                            <td class="py-2.5">
+                                <span :class="statusBadge(b.status)" class="badge text-xs capitalize">{{ b.status }}</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p v-if="!recentBookings?.length" class="text-center text-gray-400 text-sm py-8">No bookings yet</p>
             </div>
-            <table class="w-full text-sm">
-                <thead>
-                    <tr class="text-xs text-gray-400 border-b border-gray-100">
-                        <th class="text-left pb-2 font-medium">Ref</th>
-                        <th class="text-left pb-2 font-medium">Customer</th>
-                        <th class="text-left pb-2 font-medium hidden md:table-cell">Package</th>
-                        <th class="text-left pb-2 font-medium">Total</th>
-                        <th class="text-left pb-2 font-medium">Status</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-50">
-                    <tr v-for="b in recentBookings" :key="b.id">
-                        <td class="py-2.5">
-                            <a :href="`/admin/bookings/${b.id}`" class="font-mono text-xs text-[#E85D26] hover:underline">
-                                {{ b.booking_reference }}
-                            </a>
-                        </td>
-                        <td class="py-2.5 text-gray-700 text-xs">{{ b.customer_name }}</td>
-                        <td class="py-2.5 text-gray-500 text-xs hidden md:table-cell">{{ b.package?.name }}</td>
-                        <td class="py-2.5 font-medium text-xs">${{ Number(b.total_price).toFixed(0) }}</td>
-                        <td class="py-2.5">
-                            <span :class="statusBadge(b.status)" class="badge text-xs capitalize">{{ b.status }}</span>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-            <p v-if="!recentBookings?.length" class="text-center text-gray-400 text-sm py-8">No bookings yet</p>
+
+            <div class="bg-white rounded-xl border border-gray-200 p-5">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="font-semibold text-gray-900 text-sm">Recent quotation requests</h2>
+                    <a href="/admin/bookings?quote=1" class="text-xs text-[#E85D26] hover:underline">View all</a>
+                </div>
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="text-xs text-gray-400 border-b border-gray-100">
+                            <th class="text-left pb-2 font-medium">Ref</th>
+                            <th class="text-left pb-2 font-medium">Customer</th>
+                            <th class="text-left pb-2 font-medium hidden md:table-cell">Package</th>
+                            <th class="text-left pb-2 font-medium">Est. Price</th>
+                            <th class="text-left pb-2 font-medium">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-50">
+                        <tr v-for="b in recentQuotes" :key="b.id">
+                            <td class="py-2.5">
+                                <a :href="`/admin/bookings/${b.id}`" class="font-mono text-xs text-[#E85D26] hover:underline">
+                                    {{ b.booking_reference }}
+                                </a>
+                            </td>
+                            <td class="py-2.5 text-gray-700 text-xs">{{ b.customer_name }}</td>
+                            <td class="py-2.5 text-gray-500 text-xs hidden md:table-cell">{{ b.package?.name ?? b.custom_package_name }}</td>
+                            <td class="py-2.5 font-medium text-xs">{{ b.package_id ? `$${Number(b.total_price).toFixed(0)}` : 'TBD' }}</td>
+                            <td class="py-2.5">
+                                <span :class="statusBadge(b.status)" class="badge text-xs capitalize">{{ b.status }}</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p v-if="!recentQuotes?.length" class="text-center text-gray-400 text-sm py-8">No quotation requests yet</p>
+            </div>
         </div>
 
         <!-- Quick links -->
-        <div class="bg-white rounded-xl border border-gray-200 p-5">
+        <div class="bg-white rounded-xl border border-gray-200 p-5 align-self-start">
             <h2 class="font-semibold text-gray-900 text-sm mb-4">Quick actions</h2>
             <div class="space-y-1">
                 <a v-for="l in quickLinks" :key="l.href" :href="l.href"
@@ -66,13 +102,13 @@
 <script setup>
 import AdminLayout from '@/Layouts/AdminLayout.vue'
 
-const props = defineProps({ stats: Object, recentBookings: Array, bookingsByType: Object })
+const props = defineProps({ stats: Object, recentBookings: Array, recentQuotes: Array, bookingsByType: Object })
 
 const statCards = [
-    { label: 'Total packages',     value: props.stats?.packages || 0,         color: 'text-[#0D1B2A]' },
     { label: 'Pending bookings',   value: props.stats?.pending_bookings || 0, color: 'text-[#E85D26]' },
     { label: 'Total bookings',     value: props.stats?.bookings || 0,         color: 'text-green-600' },
-    { label: 'Revenue (30d)',      value: `$${Number(props.stats?.revenue_30d || 0).toFixed(0)}`, color: 'text-purple-600' },
+    { label: 'Pending quotes',     value: props.stats?.pending_quotes || 0,   color: 'text-indigo-650' },
+    { label: 'Total quotes',       value: props.stats?.quotes || 0,           color: 'text-[#0D1B2A]' },
 ]
 
 const STATUS_COLORS = {
@@ -85,7 +121,8 @@ function statusBadge(s) { return STATUS_COLORS[s] || 'bg-gray-100 text-gray-600'
 const quickLinks = [
     { href:'/admin/packages', label:'Manage packages', icon:'🗺' },
     { href:'/admin/packages/create', label:'Add new package', icon:'➕' },
-    { href:'/admin/bookings', label:'View all bookings', icon:'📅' },
+    { href:'/admin/bookings?quote=0', label:'View standard bookings', icon:'📅' },
+    { href:'/admin/bookings?quote=1', label:'View quotation requests', icon:'📋' },
     { href:'/admin/posts/create', label:'Write new post', icon:'✏' },
     { href:'/admin/products/create', label:'Add gear product', icon:'🎒' },
     { href:'/', label:'View live site', icon:'🌐' },

@@ -6,6 +6,7 @@ use Inertia\Inertia;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use App\Models\{Product, Category};
+use App\Services\ImageService;
 
 class AdminProductController extends Controller
 {
@@ -93,8 +94,7 @@ class AdminProductController extends Controller
         $images = $existingImages;
         if ($req->hasFile('new_images')) {
             foreach ($req->file('new_images') as $file) {
-                $path = $file->store('products', 'public');
-                $images[] = '/storage/' . $path;
+                $images[] = ImageService::store($file, 'products');
             }
         }
         return $images;

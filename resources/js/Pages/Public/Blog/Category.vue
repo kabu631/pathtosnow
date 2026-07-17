@@ -1,7 +1,6 @@
 <script setup>
 import { Head, Link, router } from '@inertiajs/vue3'
 import AppLayout from '@/Layouts/AppLayout.vue'
-import LeftSidebar from '@/Components/LeftSidebar.vue'
 import RightSidebar from '@/Components/RightSidebar.vue'
 import Pagination from '@/Components/Pagination.vue'
 import { ref, computed } from 'vue'
@@ -26,14 +25,15 @@ const heroClass = props.postType?.color ? colorMap[props.postType.color] : 'from
 
 const page = usePage()
 
-// Left sidebar links - get dynamic links
 const guideCategories = computed(() => {
-  return (page.props.navPostTypes || []).map(t => ({
-    type: t.slug,
-    icon: t.icon_emoji,
-    label: t.name,
-    href: `/travel-guide/type/${t.slug}`
-  }))
+  return (page.props.navPostTypes || [])
+    .filter(t => t.slug !== 'blog' && t.type_key !== 'blog')
+    .map(t => ({
+      type: t.slug,
+      icon: t.icon_emoji,
+      label: t.name,
+      href: `/travel-guide/type/${t.slug}`
+    }))
 })
 
 function getPostTypeLabel(slug) {
@@ -91,36 +91,13 @@ function fmt(d) {
     <div class="container-main py-10 flex gap-8 items-start">
 
       <!-- LEFT sidebar — Experiences -->
-      <LeftSidebar />
+      <RightSidebar />
 
       <!-- MAIN content -->
       <main class="flex-1 min-w-0">
 
-        <!-- Travel Guide category tabs -->
-        <div class="flex flex-wrap gap-2 mb-6">
-          <Link href="/travel-guide"
-                :class="['px-4 py-1.5 rounded-full text-sm font-medium border-2 transition-colors',
-                         type === 'travel_guide' ? 'bg-emerald-600 border-emerald-600 text-white' : 'border-slate-200 text-slate-600 hover:border-emerald-400 bg-white']">
-            📖 All Guides
-          </Link>
-          <Link v-for="cat in guideCategories" :key="cat.type" :href="cat.href"
-                :class="['px-4 py-1.5 rounded-full text-sm font-medium border-2 transition-colors',
-                         type === cat.type ? 'bg-emerald-600 border-emerald-600 text-white' : 'border-slate-200 text-slate-600 hover:border-emerald-400 bg-white']">
-            {{ cat.icon }} {{ cat.label }}
-          </Link>
-        </div>
-
-        <!-- Search bar -->
-        <div class="flex gap-3 mb-8 max-w-md">
-          <input v-model="q" @keydown.enter="search"
-                 :placeholder="`Search ${typeName?.toLowerCase() ?? 'articles'}…`"
-                 class="input flex-1" id="guide-search"
-                 :aria-label="`Search ${typeName} articles`"/>
-          <button @click="search" class="btn-primary px-5">Search</button>
-        </div>
-
         <!-- Articles grid -->
-        <div v-if="posts.data.length" class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+        <div v-if="posts.data.length" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
           <Link v-for="post in posts.data" :key="post.id"
                 :href="`/blog/${post.slug}`"
                 class="group bg-white rounded-2xl border border-slate-200 hover:border-emerald-300 hover:shadow-md transition-all overflow-hidden block">
@@ -151,9 +128,6 @@ function fmt(d) {
         <Pagination :meta="posts" />
 
       </main>
-
-      <!-- RIGHT sidebar -->
-      <RightSidebar />
 
     </div>
   </AppLayout>

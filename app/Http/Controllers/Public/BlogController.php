@@ -43,14 +43,13 @@ class BlogController extends Controller
 
     public function guideIndex()
     {
-        return Inertia::render('Public/Blog/GuideIndex', [
-            'sections' => [
-                'food'         => Post::published()->where('post_type', 'food')->limit(4)->get(['id','title','slug','cover_image','read_time']),
-                'culture'      => Post::published()->where('post_type', 'culture')->limit(4)->get(['id','title','slug','cover_image','read_time']),
-                'festivals'    => Post::published()->where('post_type', 'festival')->limit(4)->get(['id','title','slug','cover_image','read_time']),
-                'city_tour'    => Post::published()->where('post_type', 'city_tour')->limit(4)->get(['id','title','slug','cover_image','read_time']),
-                'travel_guide' => Post::published()->where('post_type', 'travel_guide')->limit(4)->get(['id','title','slug','cover_image','read_time']),
-            ],
+        return Inertia::render('Public/Blog/Index', [
+            'posts' => Post::published()->with('author:id,name')
+                ->where('post_type', '!=', 'blog')
+                ->when(request('q'), fn($q, $s) => $q->where('title', 'like', "%$s%"))
+                ->latest('published_at')->paginate(12)->withQueryString(),
+            'filters' => ['q' => request('q')],
+            'types'   => Post::TYPE_LABELS,
         ]);
     }
 

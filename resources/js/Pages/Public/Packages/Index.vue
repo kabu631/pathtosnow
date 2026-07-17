@@ -7,7 +7,7 @@
     <div class="absolute inset-0 bg-gradient-to-r from-emerald-900/90 to-sky-900/80"></div>
     <div class="absolute inset-0 bg-black/40"/>
     <div class="relative container-main py-16 text-white">
-      <h1 class="text-4xl md:text-5xl font-black leading-tight mb-3 drop-shadow-md">All Nepal experiences</h1>
+      <h1 class="text-4xl md:text-5xl font-black leading-tight mb-3 drop-shadow-md text-white">All Nepal experiences</h1>
       <p class="text-emerald-50 text-lg max-w-2xl drop-shadow">Adventures, treks, valley visits, parks, wildlife and lake expeditions</p>
     </div>
   </section>
@@ -29,7 +29,7 @@
 
       <p class="text-sm text-slate-500 mb-4">Showing {{ packages.data.length }} of {{ packages.total }} packages</p>
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
         <PackageCard v-for="pkg in packages.data" :key="pkg.id" :package="pkg"/>
       </div>
 
@@ -41,7 +41,6 @@
       <Pagination :meta="packages" />
     </main>
 
-    <RightSidebar />
 
   </div>
 </AppLayout>
@@ -52,7 +51,6 @@ import { Head, Link } from '@inertiajs/vue3'
 import AppLayout from '@/Layouts/AppLayout.vue'
 import PackageCard from '@/Components/PackageCard.vue'
 import LeftSidebar from '@/Components/LeftSidebar.vue'
-import RightSidebar from '@/Components/RightSidebar.vue'
 import Pagination from '@/Components/Pagination.vue'
 
 defineProps({ packages: Object, counts: Object, filters: Object })

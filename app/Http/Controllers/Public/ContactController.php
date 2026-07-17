@@ -27,9 +27,11 @@ class ContactController extends Controller
             'message' => 'required|string|max:3000',
         ]);
 
-        ContactMessage::create(array_merge($data, [
+        $contactMessage = ContactMessage::create(array_merge($data, [
             'ip_address' => $req->ip(),
         ]));
+
+        app(\App\Services\MailService::class)->sendAdminContactAlert($contactMessage);
 
         return back()->with('success', 'Your message has been sent! We will reply within 24 hours.');
     }

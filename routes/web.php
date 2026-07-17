@@ -1,11 +1,9 @@
 <?php
 // routes/web.php
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Public\{HomeController, PackageController, BlogController, ShopController, CartController, BookingController, GalleryController, StaticPageController, ContactController};
-use App\Http\Controllers\Admin\{DashboardController, AdminPackageController, ItineraryController, AdminBookingController, AdminPostController, AdminProductController, AdminOrderController, GalleryController as AdminGalleryController, GalleryImageController, AdminSlideController, AdminPageController, AdminContactController, AdminPackageTypeController, AdminPostTypeController, AdminUserController};
+use App\Http\Controllers\Public\{HomeController, PackageController, BlogController, ShopController, CartController, BookingController, LocationController, StaticPageController, ContactController};
+use App\Http\Controllers\Admin\{DashboardController, AdminPackageController, ItineraryController, AdminBookingController, AdminPostController, AdminProductController, AdminOrderController, AdminLocationController, LocationImageController, AdminTestimonialController, AdminSlideController, AdminPageController, AdminContactController, AdminPackageTypeController, AdminPostTypeController, AdminUserController};
 use App\Http\Controllers\Auth\AuthController;
-
-// ── PUBLIC ROUTES ──────────────────────────────────────────────────────────
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
@@ -18,6 +16,9 @@ Route::prefix('packages')->name('packages.')->group(function () {
     Route::get('/national-parks', [PackageController::class, 'nationalParks'])->name('national_park');
     Route::get('/wildlife', [PackageController::class, 'wildlife'])->name('wildlife_reserve');
     Route::get('/lakes', [PackageController::class, 'lakes'])->name('lake');
+    Route::redirect('/type/wildlife', '/packages/wildlife', 301);
+    Route::redirect('/type/wildlife-reserve', '/packages/wildlife', 301);
+    Route::redirect('/type/wildlife-reserves', '/packages/wildlife', 301);
     Route::get('/type/{slug}', [PackageController::class, 'dynamicCategory'])->name('type_category');
     Route::get('/{slug}', [PackageController::class, 'show'])->name('show');
 });
@@ -27,10 +28,11 @@ Route::get('/abroad/{slug}', [\App\Http\Controllers\Public\AbroadController::cla
 
 // Bookings
 Route::prefix('book')->name('bookings.')->group(function () {
-    Route::get('/{package:slug}', [BookingController::class, 'create'])->name('create');
-    Route::post('/{package:slug}', [BookingController::class, 'store'])->name('store');
     Route::get('/success/{reference}', [BookingController::class, 'success'])->name('success');
     Route::get('/my-bookings', [BookingController::class, 'myBookings'])->middleware('auth')->name('my');
+    Route::post('/custom-quote', [BookingController::class, 'storeCustomQuote'])->middleware('throttle:5,1')->name('store_custom_quote');
+    Route::get('/{package:slug}', [BookingController::class, 'create'])->name('create');
+    Route::post('/{package:slug}', [BookingController::class, 'store'])->middleware('throttle:5,1')->name('store');
 });
 
 // Travel Guide & Blog
@@ -54,12 +56,12 @@ Route::get('/pages/{slug}', [StaticPageController::class, 'show'])->name('pages.
 // Dedicated pages
 Route::get('/about', fn() => inertia('Public/About'))->name('about');
 Route::get('/contact', [ContactController::class, 'show'])->name('contact');
-Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
+Route::post('/contact', [ContactController::class, 'store'])->middleware('throttle:6,1')->name('contact.store');
 
-// Gallery
-Route::prefix('gallery')->name('gallery.')->group(function () {
-    Route::get('/', [GalleryController::class, 'index'])->name('index');
-    Route::get('/{slug}', [GalleryController::class, 'show'])->name('show');
+// Top Locations
+Route::prefix('locations')->name('locations.')->group(function () {
+    Route::get('/', [LocationController::class, 'index'])->name('index');
+    Route::get('/{slug}', [LocationController::class, 'show'])->name('show');
 });
 
 // Gear Shop
@@ -82,13 +84,13 @@ Route::prefix('cart')->name('cart.')->group(function () {
 
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
-    Route::post('/login', [AuthController::class, 'login']);
+    Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:10,1');
     Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
-    Route::post('/register', [AuthController::class, 'register']);
+    Route::post('/register', [AuthController::class, 'register'])->middleware('throttle:5,1');
     Route::get('/forgot-password', [AuthController::class, 'showForgotPassword'])->name('password.request');
-    Route::post('/forgot-password', [AuthController::class, 'sendResetLink'])->name('password.email');
+    Route::post('/forgot-password', [AuthController::class, 'sendResetLink'])->middleware('throttle:5,1')->name('password.email');
     Route::get('/reset-password/{token}', [AuthController::class, 'showResetPassword'])->name('password.reset');
-    Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('password.update');
+    Route::post('/reset-password', [AuthController::class, 'resetPassword'])->middleware('throttle:5,1')->name('password.update');
 });
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
 
@@ -127,7 +129,6 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     });
 
     // Posts
-
     Route::prefix('posts')->name('posts.')->group(function () {
         Route::get('/', [AdminPostController::class, 'index'])->name('index');
         Route::get('/create', [AdminPostController::class, 'create'])->name('create');
@@ -175,22 +176,24 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
         Route::delete('/{message}', [AdminContactController::class, 'destroy'])->name('destroy');
     });
 
-    // Gallery
-
-
-    Route::prefix('gallery')->name('gallery.')->group(function () {
-        Route::get('/', [AdminGalleryController::class, 'index'])->name('index');
-        Route::get('/create', [AdminGalleryController::class, 'create'])->name('create');
-        Route::post('/', [AdminGalleryController::class, 'store'])->name('store');
-        Route::get('/{gallery}', [AdminGalleryController::class, 'show'])->name('show');
-        Route::get('/{gallery}/edit', [AdminGalleryController::class, 'edit'])->name('edit');
-        Route::put('/{gallery}', [AdminGalleryController::class, 'update'])->name('update');
-        Route::delete('/{gallery}', [AdminGalleryController::class, 'destroy'])->name('destroy');
+    // Locations (Regions)
+    Route::prefix('locations')->name('locations.')->group(function () {
+        Route::get('/', [AdminLocationController::class, 'index'])->name('index');
+        Route::get('/create', [AdminLocationController::class, 'create'])->name('create');
+        Route::post('/', [AdminLocationController::class, 'store'])->name('store');
+        Route::get('/{location}', [AdminLocationController::class, 'show'])->name('show');
+        Route::get('/{location}/edit', [AdminLocationController::class, 'edit'])->name('edit');
+        Route::put('/{location}', [AdminLocationController::class, 'update'])->name('update');
+        Route::delete('/{location}', [AdminLocationController::class, 'destroy'])->name('destroy');
         
-        // Gallery Images
-        Route::post('/{gallery}/images', [GalleryImageController::class, 'store'])->name('images.store');
-        Route::delete('/images/{image}', [GalleryImageController::class, 'destroy'])->name('images.destroy');
+        // Location Images
+        Route::post('/{location}/images', [LocationImageController::class, 'store'])->name('images.store');
+        Route::delete('/images/{image}', [LocationImageController::class, 'destroy'])->name('images.destroy');
     });
+
+    // Testimonials
+    Route::patch('/testimonials/{testimonial}/toggle', [AdminTestimonialController::class, 'toggle'])->name('testimonials.toggle');
+    Route::resource('testimonials', AdminTestimonialController::class)->except(['show']);
 
     // Slides
     Route::post('slides/reorder', [AdminSlideController::class, 'reorder'])->name('slides.reorder');
@@ -205,7 +208,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     // Shared image upload
     Route::post('/upload', function (\Illuminate\Http\Request $req) {
         $req->validate(['image' => 'required|image|max:5120']);
-        $path = $req->file('image')->store('uploads', 'public');
-        return response()->json(['url' => asset("storage/{$path}")]);
+        $url = \App\Services\ImageService::store($req->file('image'), 'general');
+        return response()->json(['url' => asset(ltrim($url, '/'))]);
     })->name('upload');
 });

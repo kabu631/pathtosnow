@@ -7,7 +7,7 @@ use Illuminate\Support\Str;
 class Booking extends Model
 {
     protected $fillable = [
-        'package_id','user_id','booking_reference','customer_name','customer_email',
+        'package_id','custom_package_name','user_id','booking_reference','is_quotation','customer_name','customer_email',
         'customer_phone','customer_nationality','travel_date','group_size',
         'special_requests','emergency_contact_name','emergency_contact_phone',
         'price_per_person','total_price','currency','status','admin_notes',
@@ -15,6 +15,7 @@ class Booking extends Model
     ];
 
     protected $casts = [
+        'is_quotation'   => 'boolean',
         'travel_date'    => 'date',
         'confirmed_at'   => 'datetime',
         'cancelled_at'   => 'datetime',

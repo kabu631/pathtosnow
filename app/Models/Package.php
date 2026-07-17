@@ -9,18 +9,20 @@ use Illuminate\Support\Str;
 class Package extends Model
 {
     protected $fillable = [
-        'country_id','type','name','slug','location','region','short_description','description',
+        'country_id','location_id','type','name','slug','location','region','short_description','description',
         'cover_image','gallery','price_per_person','price_nrs','price_group','duration_days',
         'duration_nights','min_group_size','max_group_size','difficulty','max_altitude_m',
         'best_season','start_point','end_point','highlights','included','excluded',
         'requirements','faqs','featured','active','views','meta_title','meta_description',
+        'original_price','original_price_nrs','discount_label','is_special_offer',
     ];
 
     protected $casts = [
         'gallery' => 'array', 'highlights' => 'array', 'included' => 'array',
         'excluded' => 'array', 'requirements' => 'array', 'faqs' => 'array',
-        'featured' => 'boolean', 'active' => 'boolean',
+        'featured' => 'boolean', 'active' => 'boolean', 'is_special_offer' => 'boolean',
         'price_per_person' => 'decimal:2', 'price_nrs' => 'decimal:2', 'price_group' => 'decimal:2',
+        'original_price' => 'decimal:2', 'original_price_nrs' => 'decimal:2',
     ];
 
     // Type labels for display
@@ -50,6 +52,11 @@ class Package extends Model
     public function country()
     {
         return $this->belongsTo(Country::class);
+    }
+
+    public function location()
+    {
+        return $this->belongsTo(Location::class);
     }
 
     public function bookings()

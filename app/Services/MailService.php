@@ -48,6 +48,92 @@ class MailService
 
     // ── Specific email types ───────────────────────────────────────────────
 
+    public function sendAdminBookingAlert(\App\Models\Booking $booking): bool
+    {
+        $adminEmail = config('mail.from.address', 'hello@pathtosnow.com');
+        $adminName  = config('mail.from.name', 'PathToSnow');
+
+        $isQuote  = (bool) $booking->is_quotation;
+        $ref      = $booking->booking_reference;
+        $customer = $booking->customer_name;
+        $email    = $booking->customer_email;
+        $phone    = $booking->customer_phone ?? '—';
+        $package  = $booking->package?->name ?? $booking->custom_package_name ?? 'Custom Package';
+        $date     = $booking->travel_date;
+        $people   = $booking->group_size;
+        $total    = $isQuote ? 'Quote request (TBD)' : '$' . number_format($booking->total_price, 2);
+        $type     = $isQuote ? '📋 New Quotation Request' : '🎉 New Booking';
+        $subject  = $isQuote ? "New Quote Request — {$ref}" : "New Booking — {$ref}";
+        $adminUrl = url("/admin/bookings/{$booking->id}");
+
+        $body = "
+            <h2 style='color:#064e3b;margin:0 0 16px;font-size:22px;'>{$type}</h2>
+            <p style='color:#475569;line-height:1.7;margin:0 0 16px;'>
+                A new " . ($isQuote ? 'quotation request' : 'booking') . " has been submitted. Review and respond promptly.
+            </p>
+            <div style='background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:20px;margin:0 0 24px;'>
+                <table width='100%' cellpadding='0' cellspacing='0'>
+                    <tr><td style='padding:6px 0;color:#64748b;font-size:14px;'>Reference</td>
+                        <td style='padding:6px 0;color:#0f172a;font-weight:700;font-size:14px;text-align:right;font-family:monospace;'>{$ref}</td></tr>
+                    <tr><td style='padding:6px 0;color:#64748b;font-size:14px;'>Customer</td>
+                        <td style='padding:6px 0;color:#0f172a;font-size:14px;text-align:right;'>{$customer}</td></tr>
+                    <tr><td style='padding:6px 0;color:#64748b;font-size:14px;'>Email</td>
+                        <td style='padding:6px 0;color:#0f172a;font-size:14px;text-align:right;'>{$email}</td></tr>
+                    <tr><td style='padding:6px 0;color:#64748b;font-size:14px;'>Phone</td>
+                        <td style='padding:6px 0;color:#0f172a;font-size:14px;text-align:right;'>{$phone}</td></tr>
+                    <tr><td style='padding:6px 0;color:#64748b;font-size:14px;'>Package</td>
+                        <td style='padding:6px 0;color:#0f172a;font-size:14px;text-align:right;'>{$package}</td></tr>
+                    <tr><td style='padding:6px 0;color:#64748b;font-size:14px;'>Travel Date</td>
+                        <td style='padding:6px 0;color:#0f172a;font-size:14px;text-align:right;'>{$date}</td></tr>
+                    <tr><td style='padding:6px 0;color:#64748b;font-size:14px;'>Group Size</td>
+                        <td style='padding:6px 0;color:#0f172a;font-size:14px;text-align:right;'>{$people} people</td></tr>
+                    <tr style='border-top:1px solid #bbf7d0;'>
+                        <td style='padding:12px 0 6px;color:#064e3b;font-weight:700;font-size:15px;'>Amount</td>
+                        <td style='padding:12px 0 6px;color:#064e3b;font-weight:800;font-size:18px;text-align:right;'>{$total}</td></tr>
+                </table>
+            </div>
+            " . $this->btn($adminUrl, 'View in Admin Panel');
+
+        return $this->send($adminEmail, $adminName, $subject, $body);
+    }
+
+    public function sendAdminContactAlert(\App\Models\ContactMessage $message): bool
+    {
+        $adminEmail  = config('mail.from.address', 'hello@pathtosnow.com');
+        $adminName   = config('mail.from.name', 'PathToSnow');
+        $name        = $message->name;
+        $email       = $message->email;
+        $phone       = $message->phone ?? '—';
+        $subject     = $message->subject;
+        $msgHtml     = nl2br(htmlspecialchars($message->message));
+        $adminUrl    = url("/admin/contact/{$message->id}");
+
+        $body = "
+            <h2 style='color:#064e3b;margin:0 0 16px;font-size:22px;'>📬 New Contact Message</h2>
+            <p style='color:#475569;line-height:1.7;margin:0 0 16px;'>
+                A visitor has submitted a contact form message. Please reply within 24 hours.
+            </p>
+            <div style='background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:20px;margin:0 0 16px;'>
+                <table width='100%' cellpadding='0' cellspacing='0'>
+                    <tr><td style='padding:6px 0;color:#64748b;font-size:14px;'>From</td>
+                        <td style='padding:6px 0;color:#0f172a;font-weight:600;font-size:14px;text-align:right;'>{$name}</td></tr>
+                    <tr><td style='padding:6px 0;color:#64748b;font-size:14px;'>Email</td>
+                        <td style='padding:6px 0;color:#0f172a;font-size:14px;text-align:right;'>{$email}</td></tr>
+                    <tr><td style='padding:6px 0;color:#64748b;font-size:14px;'>Phone</td>
+                        <td style='padding:6px 0;color:#0f172a;font-size:14px;text-align:right;'>{$phone}</td></tr>
+                    <tr><td style='padding:6px 0;color:#64748b;font-size:14px;'>Subject</td>
+                        <td style='padding:6px 0;color:#0f172a;font-weight:600;font-size:14px;text-align:right;'>{$subject}</td></tr>
+                </table>
+            </div>
+            <div style='background:#f0fdf4;border-left:4px solid #059669;padding:16px 20px;border-radius:0 12px 12px 0;margin:0 0 24px;'>
+                <p style='color:#94a3b8;font-size:12px;margin:0 0 8px;text-transform:uppercase;letter-spacing:0.05em;'>Message</p>
+                <p style='color:#0f172a;line-height:1.8;margin:0;font-size:15px;'>{$msgHtml}</p>
+            </div>
+            " . $this->btn($adminUrl, 'Reply in Admin Panel');
+
+        return $this->send($adminEmail, $adminName, "New Contact: {$subject}", $body);
+    }
+
     public function sendWelcome(User $user): bool
     {
         $name = $user->name;
@@ -93,16 +179,25 @@ class MailService
     {
         $name     = $booking->customer_name;
         $email    = $booking->customer_email;
-        $package  = $booking->package?->name ?? 'Your package';
+        $package  = $booking->package?->name ?? $booking->custom_package_name ?? 'Custom Package';
         $ref      = $booking->booking_reference;
         $date     = $booking->travel_date;
-        $total    = '$' . number_format($booking->total_price, 2);
+        $total    = $booking->package_id 
+            ? '$' . number_format($booking->total_price, 2) 
+            : 'Custom Quote (TBD)';
         $people   = $booking->group_size;
 
+        $isQuote  = (bool) $booking->is_quotation;
+        $title    = $isQuote ? 'Quotation Request Received! 📋' : 'Booking Confirmed! ✅';
+        $msg      = $isQuote 
+            ? "Hi <strong>{$name}</strong>, your request for a quotation has been received. Our team will prepare a custom quote and contact you shortly."
+            : "Hi <strong>{$name}</strong>, your booking has been received. Our team will review and confirm it shortly.";
+        $subject  = $isQuote ? "Quotation Request Received — {$ref}" : "Booking Received — {$ref}";
+
         $body = "
-            <h2 style='color:#064e3b;margin:0 0 16px;font-size:22px;'>Booking Confirmed! ✅</h2>
+            <h2 style='color:#064e3b;margin:0 0 16px;font-size:22px;'>{$title}</h2>
             <p style='color:#475569;line-height:1.7;margin:0 0 16px;'>
-                Hi <strong>{$name}</strong>, your booking has been received. Our team will review and confirm it shortly.
+                {$msg}
             </p>
             <div style='background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:20px;margin:0 0 24px;'>
                 <table width='100%' cellpadding='0' cellspacing='0'>
@@ -115,16 +210,16 @@ class MailService
                     <tr><td style='padding:6px 0;color:#64748b;font-size:14px;'>Group Size</td>
                         <td style='padding:6px 0;color:#0f172a;font-size:14px;text-align:right;'>{$people} people</td></tr>
                     <tr style='border-top:1px solid #bbf7d0;'>
-                        <td style='padding:12px 0 6px;color:#064e3b;font-weight:700;font-size:15px;'>Total</td>
+                        <td style='padding:12px 0 6px;color:#064e3b;font-weight:700;font-size:15px;'>Total Est. Price</td>
                         <td style='padding:12px 0 6px;color:#064e3b;font-weight:800;font-size:18px;text-align:right;'>{$total}</td></tr>
                 </table>
             </div>
-            " . $this->btn(url('/book/my-bookings'), 'View My Bookings') . "
+            " . $this->btn(url('/book/my-bookings'), 'View My Requests') . "
             <p style='color:#94a3b8;font-size:13px;margin:24px 0 0;'>
                 Questions? Reply to this email or contact us at " . config('mail.from.address') . ".
             </p>";
 
-        return $this->send($email, $name, "Booking Received — {$ref}", $body);
+        return $this->send($email, $name, $subject, $body);
     }
 
     public function sendBookingStatusUpdate(\App\Models\Booking $booking): bool

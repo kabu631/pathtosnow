@@ -29,7 +29,11 @@ class HandleInertiaRequests extends Middleware
             'cartCount' => collect(session('cart', []))->sum('quantity'),
             // Admin badge: pending bookings
             'pendingBookings' => $request->user()?->isAdmin()
-                ? Booking::where('status','pending')->count()
+                ? Booking::where('is_quotation', false)->where('status','pending')->count()
+                : 0,
+            // Admin badge: pending quotation requests
+            'pendingQuotes' => $request->user()?->isAdmin()
+                ? Booking::where('is_quotation', true)->where('status','pending')->count()
                 : 0,
             // Admin badge: unread contact messages
             'unreadContactCount' => $request->user()?->isAdmin()
@@ -49,6 +53,9 @@ class HandleInertiaRequests extends Middleware
             ),
             'packageTypeCounts' => cache()->remember('pkg_type_counts', 300, fn() =>
                 Package::active()->get(['type'])->groupBy('type')->map->count()
+            ),
+            'allActivePackages' => cache()->remember('all_active_pkgs', 300, fn() =>
+                Package::active()->orderBy('name')->get(['id', 'name', 'slug', 'price_per_person'])
             ),
         ];
     }

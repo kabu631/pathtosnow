@@ -26,9 +26,8 @@ const experiences = computed(() => {
 </script>
 
 <template>
-  <aside class="hidden lg:block w-52 flex-shrink-0" aria-label="Experience categories">
-    <div class="sticky top-24 space-y-2">
-      <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest px-2 mb-3">Experiences</h3>
+  <aside class="hidden lg:block w-52 flex-shrink-0 self-start sticky top-24 max-h-[calc(100vh-7rem)] overflow-y-auto sidebar-scroll space-y-2 pr-1" aria-label="Experience categories">
+      <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest px-2 mb-3">Packages</h3>
 
       <Link href="/packages"
         :class="['flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-medium transition-all',
@@ -51,6 +50,10 @@ const experiences = computed(() => {
           Gear Shop
         </Link>
       </div>
-    </div>
   </aside>
 </template>
+
+<style scoped>
+.sidebar-scroll { scrollbar-width: none; }
+.sidebar-scroll::-webkit-scrollbar { display: none; }
+</style>

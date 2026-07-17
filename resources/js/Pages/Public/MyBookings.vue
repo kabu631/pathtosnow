@@ -18,10 +18,10 @@ function fmt(d) {
 </script>
 
 <template>
-  <Head title="My Bookings" />
+  <Head title="My Bookings & Quotes" />
   <AppLayout>
     <div class="max-w-4xl mx-auto px-6 py-14">
-      <h1 class="text-3xl font-bold text-white mb-8">My Bookings</h1>
+      <h1 class="text-3xl font-bold text-white mb-8">My Bookings & Quotes</h1>
 
       <div v-if="bookings.data.length" class="space-y-4">
         <div v-for="b in bookings.data" :key="b.id" class="card p-6 flex flex-col sm:flex-row gap-4 items-start">
@@ -31,8 +31,13 @@ function fmt(d) {
           <div class="flex-1 min-w-0">
             <div class="flex items-start justify-between gap-2 flex-wrap">
               <div>
-                <p class="font-semibold text-white text-lg">{{ b.package?.name }}</p>
-                <p class="text-slate-400 text-sm mt-0.5">Ref: {{ b.booking_reference }}</p>
+                <p class="font-semibold text-white text-lg">{{ b.package?.name ?? b.custom_package_name }}</p>
+                <p class="text-slate-400 text-sm mt-0.5 flex items-center gap-2 flex-wrap">
+                  <span>Ref: {{ b.booking_reference }}</span>
+                  <span v-if="b.is_quotation" class="bg-indigo-500/20 text-indigo-300 text-[10px] font-bold px-1.5 py-0.5 rounded border border-indigo-500/30 uppercase tracking-wide">
+                    Quote Request
+                  </span>
+                </p>
               </div>
               <span :class="['badge text-xs px-3 py-1', statusColors[b.status] ?? 'bg-slate-700 text-slate-300']">
                 {{ b.status.replace('_', ' ') }}
@@ -41,7 +46,7 @@ function fmt(d) {
             <div class="flex flex-wrap gap-4 mt-3 text-sm text-slate-400">
               <span>📅 Travel: <strong class="text-slate-200">{{ fmt(b.travel_date) }}</strong></span>
               <span>👥 Group: <strong class="text-slate-200">{{ b.group_size }}</strong></span>
-              <span>💵 Total: <strong class="text-orange-400">${{ Number(b.total_price).toFixed(2) }}</strong></span>
+              <span>💵 {{ b.is_quotation ? 'Est. Total' : 'Total' }}: <strong class="text-orange-400">{{ b.package_id ? `$${Number(b.total_price).toFixed(2)}` : 'TBD' }}</strong></span>
             </div>
           </div>
         </div>
@@ -49,7 +54,7 @@ function fmt(d) {
 
       <div v-else class="text-center py-20">
         <p class="text-5xl mb-4">🏔️</p>
-        <p class="text-xl text-slate-400 mb-6">No bookings yet</p>
+        <p class="text-xl text-slate-400 mb-6">No bookings or quotation requests yet</p>
         <Link :href="route('packages.index')" class="btn-primary">Explore Packages</Link>
       </div>
 

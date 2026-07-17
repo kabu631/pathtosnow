@@ -11,7 +11,8 @@ class HomeController extends Controller
     {
         return Inertia::render('Public/Home', [
             'featuredPackages' => Package::active()->featured()
-                ->select('id','type','name','slug','location','price_per_person','duration_days','cover_image','difficulty','short_description')
+                ->select('id','type','name','slug','location','price_per_person','duration_days','cover_image','difficulty','short_description','location_id')
+                ->with('location:id,name')
                 ->latest()->limit(6)->get(),
             'packageCounts' => [
                 'adventure'        => Package::active()->ofType('adventure')->count(),
@@ -27,6 +28,12 @@ class HomeController extends Controller
             'featuredProducts' => Product::active()->featured()->with('category:id,name,slug')
                 ->limit(4)->get(['id','name','slug','price','compare_price','images','category_id']),
             'slides' => Slide::where('is_active', true)->orderBy('sort_order')->get(),
+            'testimonials' => \App\Models\Testimonial::where('is_active', true)->get(),
+            'specialOffers' => Package::active()
+                ->where('is_special_offer', true)
+                ->select('id','type','name','slug','location','price_per_person','price_nrs','original_price','original_price_nrs','discount_label','duration_days','cover_image','difficulty')
+                ->latest()->limit(3)->get(),
+            'locations' => \App\Models\Location::where('is_active', true)->withCount('packages')->latest()->limit(6)->get()
         ]);
     }
 }

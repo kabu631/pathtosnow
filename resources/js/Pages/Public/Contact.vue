@@ -207,28 +207,28 @@ const contactInfo = [
           </div>
 
           <!-- Quick links -->
-          <div class="bg-slate-900 rounded-3xl p-7">
-            <h3 class="font-black text-lg mb-4 text-white">Quick Links</h3>
+          <div class="bg-white border border-slate-100 rounded-3xl p-7">
+            <h3 class="font-black text-lg mb-4 text-slate-900">Quick Links</h3>
             <div class="space-y-3">
               <Link href="/packages" class="flex items-center gap-3 group">
-                <span class="w-9 h-9 bg-white/10 rounded-xl flex items-center justify-center text-lg group-hover:bg-emerald-600 transition-colors flex-shrink-0">🗺</span>
+                <span class="w-9 h-9 bg-slate-100 rounded-xl flex items-center justify-center text-lg group-hover:bg-emerald-600 transition-colors flex-shrink-0">🗺</span>
                 <div>
-                  <p class="text-sm font-semibold text-white">Browse Packages</p>
-                  <p class="text-xs text-slate-400">Find your perfect trek</p>
+                  <p class="text-sm font-semibold text-slate-800">Browse Packages</p>
+                  <p class="text-xs text-slate-500">Find your perfect trek</p>
                 </div>
               </Link>
               <Link href="/shop" class="flex items-center gap-3 group">
-                <span class="w-9 h-9 bg-white/10 rounded-xl flex items-center justify-center text-lg group-hover:bg-emerald-600 transition-colors flex-shrink-0">🎒</span>
+                <span class="w-9 h-9 bg-slate-100 rounded-xl flex items-center justify-center text-lg group-hover:bg-emerald-600 transition-colors flex-shrink-0">🎒</span>
                 <div>
-                  <p class="text-sm font-semibold text-white">Gear Shop</p>
-                  <p class="text-xs text-slate-400">Quality trekking equipment</p>
+                  <p class="text-sm font-semibold text-slate-800">Gear Shop</p>
+                  <p class="text-xs text-slate-500">Quality trekking equipment</p>
                 </div>
               </Link>
               <Link href="/about" class="flex items-center gap-3 group">
-                <span class="w-9 h-9 bg-white/10 rounded-xl flex items-center justify-center text-lg group-hover:bg-emerald-600 transition-colors flex-shrink-0">🏔</span>
+                <span class="w-9 h-9 bg-slate-100 rounded-xl flex items-center justify-center text-lg group-hover:bg-emerald-600 transition-colors flex-shrink-0">🏔</span>
                 <div>
-                  <p class="text-sm font-semibold text-white">About PathToSnow</p>
-                  <p class="text-xs text-slate-400">Our story & mission</p>
+                  <p class="text-sm font-semibold text-slate-800">About PathToSnow</p>
+                  <p class="text-xs text-slate-500">Our story & mission</p>
                 </div>
               </Link>
             </div>

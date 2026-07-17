@@ -3,7 +3,6 @@ import { Head, Link, router } from '@inertiajs/vue3'
 import AppLayout from '@/Layouts/AppLayout.vue'
 import PackageCard from '@/Components/PackageCard.vue'
 import LeftSidebar from '@/Components/LeftSidebar.vue'
-import RightSidebar from '@/Components/RightSidebar.vue'
 import Pagination from '@/Components/Pagination.vue'
 import { ref, watch } from 'vue'
 
@@ -44,7 +43,7 @@ watch([difficulty, sort], search)
           <span class="text-5xl drop-shadow-lg">{{ packageType.icon_emoji }}</span>
           <span :class="packageType.badge_class" class="badge text-sm px-3 py-1 shadow-sm">Nepal Experiences</span>
         </div>
-        <h1 class="text-4xl md:text-5xl font-black leading-tight mb-3 drop-shadow-md">{{ packageType.name }} Packages</h1>
+        <h1 class="text-4xl md:text-5xl font-black leading-tight mb-3 drop-shadow-md text-white">{{ packageType.name }} Packages</h1>
         <p class="text-white/90 text-lg max-w-2xl drop-shadow">{{ packageType.description }}</p>
       </div>
     </section>
@@ -65,21 +64,21 @@ watch([difficulty, sort], search)
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-7">
         <aside class="lg:col-span-3"><LeftSidebar :active-type="packageType.slug" /></aside>
 
-        <main class="lg:col-span-6">
+        <main class="lg:col-span-9">
           <!-- Filters -->
           <div class="flex flex-wrap gap-3 mb-6 items-center justify-between">
             <p class="text-sm text-slate-500">
               <span class="font-semibold text-slate-800">{{ packages.total }}</span> packages found
             </p>
             <div class="flex gap-2 flex-wrap">
-              <select v-model="difficulty" class="text-sm border border-slate-200 rounded-lg px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-emerald-400">
+              <select v-model="difficulty" class="min-w-[160px] text-sm border border-slate-200 rounded-lg px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-emerald-400">
                 <option value="">All difficulties</option>
-                <option value="Easy">Easy</option>
-                <option value="Moderate">Moderate</option>
-                <option value="Strenuous">Strenuous</option>
-                <option value="Extreme">Extreme</option>
+                <option value="easy">Easy</option>
+                <option value="moderate">Moderate</option>
+                <option value="challenging">Challenging</option>
+                <option value="strenuous">Strenuous</option>
               </select>
-              <select v-model="sort" class="text-sm border border-slate-200 rounded-lg px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-emerald-400">
+              <select v-model="sort" class="min-w-[160px] text-sm border border-slate-200 rounded-lg px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-emerald-400">
                 <option value="featured">Featured first</option>
                 <option value="price_asc">Price ↑</option>
                 <option value="price_desc">Price ↓</option>
@@ -92,7 +91,7 @@ watch([difficulty, sort], search)
             </div>
           </div>
 
-          <div v-if="packages.data.length" class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+          <div v-if="packages.data.length" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             <PackageCard v-for="pkg in packages.data" :key="pkg.id" :package="pkg"/>
           </div>
           <div v-else class="text-center py-16 text-slate-400">
@@ -104,7 +103,6 @@ watch([difficulty, sort], search)
           <Pagination v-if="packages.last_page > 1" :links="packages.links" class="mt-8"/>
         </main>
 
-        <aside class="lg:col-span-3"><RightSidebar /></aside>
       </div>
     </div>
   </AppLayout>

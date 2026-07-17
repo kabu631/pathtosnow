@@ -37,12 +37,20 @@
       <Link href="/admin/packages?abroad=1" :class="['admin-link-sub', $page.url.includes('abroad=1') && !$page.url.includes('create') ? 'text-emerald-600 font-medium' : '']">Abroad Packages</Link>
       <Link href="/admin/packages/create?abroad=1" :class="['admin-link-sub', $page.url.includes('create?abroad=1') ? 'text-emerald-600 font-medium' : '']">+ New abroad package</Link>
 
-      <Link :href="r('admin.bookings.index')" :class="['admin-link', active('/admin/bookings')]">
+      <Link href="/admin/bookings?quote=0" :class="['admin-link', active('/admin/bookings') && !$page.url.includes('quote=1')]">
         <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
         Bookings
         <span v-if="$page.props.pendingBookings > 0"
               class="ml-auto bg-amber-100 text-amber-700 text-xs font-bold px-2 py-0.5 rounded-full">
           {{ $page.props.pendingBookings }}
+        </span>
+      </Link>
+      <Link href="/admin/bookings?quote=1" :class="['admin-link', active('/admin/bookings') && $page.url.includes('quote=1')]">
+        <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+        Quotation Requests
+        <span v-if="$page.props.pendingQuotes > 0"
+              class="ml-auto bg-indigo-100 text-indigo-700 text-xs font-bold px-2 py-0.5 rounded-full">
+          {{ $page.props.pendingQuotes }}
         </span>
       </Link>
 
@@ -56,9 +64,13 @@
       </Link>
       <Link :href="r('admin.posts.create')" class="admin-link-sub">+ New post</Link>
       <Link :href="r('admin.post-types.index')" class="admin-link-sub">Post Types</Link>
-      <Link :href="r('admin.gallery.index')" :class="['admin-link', active('/admin/gallery')]">
-        <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-        Gallery
+      <Link :href="r('admin.locations.index')" :class="['admin-link', active('/admin/locations')]">
+        <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+        Locations
+      </Link>
+      <Link :href="r('admin.testimonials.index')" :class="['admin-link', active('/admin/testimonials')]">
+        <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
+        Testimonials
       </Link>
       <Link :href="r('admin.pages.index')" :class="['admin-link', active('/admin/pages')]">
         <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
@@ -165,7 +177,8 @@ function r(name) {
     'admin.post-types.index': '/admin/post-types',
     'admin.products.index': '/admin/products',
     'admin.products.create':'/admin/products/create',
-    'admin.gallery.index':   '/admin/gallery',
+    'admin.locations.index': '/admin/locations',
+    'admin.testimonials.index': '/admin/testimonials',
     'admin.pages.index':     '/admin/pages',
     'admin.contact.index':   '/admin/contact',
     'admin.orders.index':    '/admin/orders',

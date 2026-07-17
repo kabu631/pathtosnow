@@ -201,8 +201,12 @@
                 </p>
               </div>
             </div>
-            <Link v-else :href="`/book/${pkg.slug}`" class="btn-primary w-full mb-4">
+            <Link v-else :href="`/book/${pkg.slug}`" class="btn-primary w-full mb-3 text-center block">
               Book this package →
+            </Link>
+            <Link v-if="!isAdmin" :href="`/book/${pkg.slug}?quote=1`" 
+                  class="w-full py-3 px-4 text-sm font-bold text-center block rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 hover:text-slate-900 transition shadow-sm mb-4">
+              Request a Quotation
             </Link>
 
             <div class="space-y-2.5 text-sm text-slate-600 mb-5">

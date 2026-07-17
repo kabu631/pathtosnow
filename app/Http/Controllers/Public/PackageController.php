@@ -8,10 +8,37 @@ use App\Models\PackageType;
 
 class PackageController extends Controller
 {
+    private function normaliseTypeSlug(string $slug): string
+    {
+        return [
+            'wildlife'          => 'wildlife_reserve',
+            'wildlife-reserve'  => 'wildlife_reserve',
+            'wildlife-reserves' => 'wildlife_reserve',
+            'national-park'     => 'national_park',
+            'national-parks'    => 'national_park',
+            'valley-visit'      => 'valley_visit',
+            'valley-visits'     => 'valley_visit',
+        ][$slug] ?? str_replace('-', '_', $slug);
+    }
+
+    private function applyPackageSearch($query, ?string $term)
+    {
+        return $query->when($term, function ($qq) use ($term) {
+            $qq->where(function ($inner) use ($term) {
+                $inner->where('name', 'like', "%{$term}%")
+                    ->orWhere('location', 'like', "%{$term}%");
+            });
+        });
+    }
     /** Generic handler for any package type slug — used by /packages/type/{slug} */
     public function dynamicCategory(string $slug)
     {
-        $packageType = PackageType::where('slug', $slug)->where('is_active', true)->firstOrFail();
+        $typeKey = $this->normaliseTypeSlug($slug);
+        $packageType = PackageType::where('is_active', true)
+            ->where(function ($query) use ($slug, $typeKey) {
+                $query->where('slug', $slug)->orWhere('type_key', $typeKey);
+            })
+            ->firstOrFail();
 
         $q          = request('q');
         $difficulty = request('difficulty');
@@ -24,8 +51,7 @@ class PackageController extends Controller
         ];
         [$col, $dir] = $sortMap[$sort] ?? ['featured', 'desc'];
 
-        $packages = Package::active()->ofType($packageType->type_key)
-            ->when($q,          fn($qq) => $qq->where('name', 'like', "%$q%")->orWhere('location', 'like', "%$q%"))
+        $packages = $this->applyPackageSearch(Package::active()->ofType($packageType->type_key), $q)
             ->when($difficulty, fn($qq) => $qq->where('difficulty', $difficulty))
             ->orderBy($col, $dir)->latest()->paginate(9)->withQueryString();
 
@@ -50,8 +76,7 @@ class PackageController extends Controller
         ];
         [$col, $dir] = $sortMap[$sort] ?? ['featured', 'desc'];
 
-        $packages = Package::active()->ofType($type)
-            ->when($q,          fn($qq) => $qq->where('name', 'like', "%$q%")->orWhere('location', 'like', "%$q%"))
+        $packages = $this->applyPackageSearch(Package::active()->ofType($type), $q)
             ->when($difficulty, fn($qq) => $qq->where('difficulty', $difficulty))
             ->orderBy($col, $dir)->latest()->paginate(9)->withQueryString();
 
@@ -66,9 +91,10 @@ class PackageController extends Controller
     {
         $type = request('type');
         return Inertia::render('Public/Packages/Index', [
-            'packages' => Package::active()
-                ->when($type, fn($q) => $q->ofType($type))
-                ->when(request('q'), fn($q, $s) => $q->where('name', 'like', "%$s%"))
+            'packages' => $this->applyPackageSearch(
+                Package::active()->when($type, fn($q) => $q->ofType($type)),
+                request('q')
+            )
                 ->orderBy('featured', 'desc')->latest()->paginate(12)->withQueryString(),
             'counts'  => Package::active()->get(['type'])->groupBy('type')->map->count(),
             'filters' => ['type' => $type, 'q' => request('q')],

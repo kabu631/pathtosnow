@@ -2,7 +2,6 @@
 import { Head, Link } from '@inertiajs/vue3'
 import AppLayout from '@/Layouts/AppLayout.vue'
 import PostCard from '@/Components/PostCard.vue'
-import LeftSidebar from '@/Components/LeftSidebar.vue'
 import RightSidebar from '@/Components/RightSidebar.vue'
 import Pagination from '@/Components/Pagination.vue'
 defineProps({ posts: Object, filters: Object, types: Object })
@@ -24,7 +23,7 @@ defineProps({ posts: Object, filters: Object, types: Object })
           <span class="text-3xl drop-shadow-lg">✍️</span>
           <span class="bg-sky-100 text-sky-800 text-sm px-3 py-1 rounded-full font-semibold shadow-sm">PathToSnow Journal</span>
         </div>
-        <h1 class="text-4xl md:text-5xl font-black leading-tight mb-3 drop-shadow-md">Nepal Travel Blog</h1>
+        <h1 class="text-4xl md:text-5xl font-black leading-tight mb-3 drop-shadow-md text-white">Nepal Travel Blog</h1>
         <p class="text-sky-50 text-lg max-w-xl drop-shadow">Nepal travel stories, insider tips, food guides and cultural insights — written by locals for adventurers.</p>
       </div>
     </section>
@@ -41,26 +40,11 @@ defineProps({ posts: Object, filters: Object, types: Object })
     <!-- Three-column layout -->
     <div class="container-main py-10 flex gap-8 items-start">
 
-      <LeftSidebar />
+      <RightSidebar />
 
       <main class="flex-1 min-w-0">
-        <!-- Type filter pills -->
-        <div class="flex flex-wrap gap-2 mb-8">
-          <Link href="/blog"
-                :class="['px-4 py-1.5 rounded-full text-sm font-medium border-2 transition-colors',
-                         !filters.type ? 'bg-emerald-600 border-emerald-600 text-white' : 'border-slate-300 text-slate-600 hover:border-emerald-400 bg-white']">
-            All posts
-          </Link>
-          <Link v-for="(label, type) in types" :key="type"
-                :href="`/blog?type=${type}`"
-                :class="['px-4 py-1.5 rounded-full text-sm font-medium border-2 transition-colors',
-                         filters.type===type ? 'bg-emerald-600 border-emerald-600 text-white' : 'border-slate-300 text-slate-600 hover:border-emerald-400 bg-white']">
-            {{ label }}
-          </Link>
-        </div>
-
         <!-- Posts grid -->
-        <div v-if="posts.data.length" class="grid sm:grid-cols-2 gap-5">
+        <div v-if="posts.data.length" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
           <PostCard v-for="post in posts.data" :key="post.id" :post="post"/>
         </div>
 
@@ -71,8 +55,6 @@ defineProps({ posts: Object, filters: Object, types: Object })
 
         <Pagination :meta="posts" />
       </main>
-
-      <RightSidebar />
 
     </div>
   </AppLayout>

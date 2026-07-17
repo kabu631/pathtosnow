@@ -15,11 +15,15 @@ class AdminBookingController extends Controller
             'bookings' => Booking::with('package:id,name,type,slug')
                 ->when(request('status'), fn($q, $s) => $q->where('status', $s))
                 ->when(request('type'),   fn($q, $t) => $q->whereHas('package', fn($q2) => $q2->where('type', $t)))
+                ->when(request()->has('quote'), 
+                    fn($q) => $q->where('is_quotation', request()->boolean('quote')),
+                    fn($q) => $q->where('is_quotation', false)
+                )
                 ->when(request('q'),      fn($q, $s) => $q->where('customer_name', 'like', "%$s%")
                     ->orWhere('customer_email', 'like', "%$s%")
                     ->orWhere('booking_reference', 'like', "%$s%"))
                 ->latest()->paginate(20)->withQueryString(),
-            'filters' => request()->only(['status', 'type', 'q']),
+            'filters' => array_merge(['quote' => '0'], request()->only(['status', 'type', 'q', 'quote'])),
             'types'   => \App\Models\Package::TYPE_LABELS,
         ]);
     }

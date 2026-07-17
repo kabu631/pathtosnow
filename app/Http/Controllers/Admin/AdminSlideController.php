@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\Slide;
+use App\Services\ImageService;
 
 class AdminSlideController extends Controller
 {
@@ -92,7 +93,6 @@ class AdminSlideController extends Controller
 
     private function handleImage(Request $req)
     {
-        $path = $req->file('new_image')->store('slides', 'public');
-        return '/storage/' . $path;
+        return ImageService::store($req->file('new_image'), 'slides');
     }
 }

@@ -4,7 +4,7 @@
     <Head><title>My Cart — PathToSnow</title></Head>
     <div class="container-main py-10 max-w-4xl">
         <h1 class="text-2xl font-black text-[#0f172a] mb-8">
-            Shopping cart <span class="text-gray-400 font-normal text-lg">({{ cartItems.length }} items)</span>
+            Shopping cart <span class="text-gray-400 font-normal text-lg">({{ cartItems.length }} {{ cartItems.length === 1 ? 'product' : 'products' }}, {{ totalItems }} {{ totalItems === 1 ? 'item' : 'items' }})</span>
         </h1>
         <div v-if="!cartItems.length" class="text-center py-20">
             <p class="text-5xl mb-4">🛒</p>
@@ -20,7 +20,9 @@
                     </div>
                     <div class="flex-1 min-w-0">
                         <p class="text-sm font-medium text-gray-900">{{ item.name }}</p>
-                        <p class="text-xs text-gray-400 mt-0.5">${{ Number(item.price).toFixed(2) }} each</p>
+                        <p class="text-xs text-gray-400 mt-0.5">
+                            ${{ Number(item.price).toFixed(2) }} each · Qty {{ item.quantity }}
+                        </p>
                     </div>
                     <div class="flex items-center gap-2">
                         <input type="number" :value="item.quantity" min="0" max="99"
@@ -94,6 +96,7 @@ const props = defineProps({ cartItems: Array })
 const checkoutOpen = ref(false)
 const submitting   = ref(false)
 const checkout = ref({ name:'', email:'', phone:'', address:'', city:'', country:'', postal_code:'' })
+const totalItems = computed(() => (props.cartItems||[]).reduce((s,i) => s + Number(i.quantity || 0), 0))
 const subtotal = computed(() => (props.cartItems||[]).reduce((s,i) => s + Number(i.price) * i.quantity, 0))
 function remove(item) { router.delete('/cart/remove', { data: { product_id: item.id } }) }
 function updateQty(item, qty) { router.patch('/cart/update', { product_id: item.id, quantity: parseInt(qty) }) }

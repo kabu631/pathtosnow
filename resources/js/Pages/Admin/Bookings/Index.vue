@@ -1,6 +1,6 @@
 <template>
 <!-- resources/js/Pages/Admin/Bookings/Index.vue -->
-<AdminLayout title="Bookings">
+<AdminLayout :title="props.filters?.quote === '1' ? 'Quotation Requests' : 'Bookings'">
     <div class="mb-5 flex flex-wrap gap-3">
         <input v-model="search" @input="filter" placeholder="Search name / email / ref..." class="input text-sm max-w-xs"/>
         <select v-model="statusF" @change="filter" class="input text-sm w-auto">
@@ -32,18 +32,25 @@
                         <a :href="`/admin/bookings/${b.id}`" class="font-mono text-xs text-[#E85D26] hover:underline">
                             {{ b.booking_reference }}
                         </a>
+                        <div v-if="b.is_quotation" class="mt-1">
+                            <span class="bg-indigo-50 text-indigo-700 text-[10px] font-bold px-1.5 py-0.5 rounded border border-indigo-200 uppercase tracking-wide">
+                                Quote Request
+                            </span>
+                        </div>
                     </td>
                     <td class="px-4 py-3">
                         <p class="text-sm text-gray-900">{{ b.customer_name }}</p>
                         <p class="text-xs text-gray-400">{{ b.customer_email }}</p>
                     </td>
                     <td class="px-4 py-3 hidden md:table-cell">
-                        <span :class="`type-${b.package?.type}`" class="badge text-xs">
-                            {{ b.package?.name }}
+                        <span :class="`type-${b.package?.type || 'custom'}`" class="badge text-xs">
+                            {{ b.package?.name ?? b.custom_package_name }}
                         </span>
                     </td>
-                    <td class="px-4 py-3 text-xs text-gray-500 hidden lg:table-cell">{{ b.travel_date }}</td>
-                    <td class="px-4 py-3 font-semibold text-[#0D1B2A]">${{ Number(b.total_price).toFixed(0) }}</td>
+                    <td class="px-4 py-3 text-xs text-gray-500 hidden lg:table-cell">{{ fmt(b.travel_date) }}</td>
+                    <td class="px-4 py-3 font-semibold text-[#0D1B2A]">
+                        {{ b.package_id ? `$${Number(b.total_price).toFixed(0)}` : 'TBD' }}
+                    </td>
                     <td class="px-4 py-3">
                         <span :class="statusBadge(b.status)" class="badge text-xs capitalize">{{ b.status }}</span>
                     </td>
@@ -55,7 +62,7 @@
         </table>
         <div v-if="!bookings.data.length" class="text-center py-16 text-gray-400">
             <p class="text-4xl mb-3">📅</p>
-            <p class="text-sm">No bookings yet.</p>
+            <p class="text-sm">No {{ props.filters?.quote === '1' ? 'quotation requests' : 'bookings' }} yet.</p>
         </div>
     </div>
 
@@ -80,7 +87,12 @@ const statuses = ['pending','confirmed','in_progress','completed','cancelled']
 let t = null
 function filter() {
     clearTimeout(t); t = setTimeout(() => {
-        router.get('/admin/bookings', { q: search.value || undefined, status: statusF.value || undefined, type: typeF.value || undefined }, { preserveState: true, replace: true })
+        router.get('/admin/bookings', { 
+            q: search.value || undefined, 
+            status: statusF.value || undefined, 
+            type: typeF.value || undefined,
+            quote: props.filters?.quote || undefined
+        }, { preserveState: true, replace: true })
     }, 400)
 }
 
@@ -89,4 +101,10 @@ const STATUS_COLORS = {
     in_progress:'bg-purple-100 text-purple-800', completed:'bg-green-100 text-green-800', cancelled:'bg-red-100 text-red-800',
 }
 function statusBadge(s) { return STATUS_COLORS[s] || 'bg-gray-100 text-gray-600' }
+
+function fmt(val) {
+    if (!val) return '—'
+    const d = new Date(val)
+    return isNaN(d) ? val : d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })
+}
 </script>

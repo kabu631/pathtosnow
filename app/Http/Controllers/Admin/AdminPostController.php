@@ -5,7 +5,8 @@ use App\Http\Controllers\Controller;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
-use App\Models\{Post, Package, GalleryAlbum, GalleryImage, PostType};
+use App\Models\{Post, Package, Location, LocationImage, PostType};
+use App\Services\ImageService;
 
 class AdminPostController extends Controller
 {
@@ -26,7 +27,7 @@ class AdminPostController extends Controller
             'post'     => null,
             'types'    => PostType::active()->orderBy('sort_order')->pluck('name', 'type_key'),
             'packages' => Package::active()->orderBy('name')->get(['id', 'name', 'type']),
-            'albums'   => GalleryAlbum::orderBy('title')->get(['id', 'title']),
+            'albums'   => Location::where('is_active', true)->orderBy('name')->get(['id', 'name']),
         ]);
     }
 
@@ -35,7 +36,16 @@ class AdminPostController extends Controller
         $data = $this->validatePost($req);
         $data['user_id']      = auth()->id();
         $data['published_at'] = $data['published'] ? now() : null;
-        Post::create($data);
+        if ($req->hasFile('cover_image')) {
+            $data['cover_image'] = ImageService::store($req->file('cover_image'), 'posts');
+        }
+        $post = Post::create($data);
+
+        // Assign cover photo to Location gallery if requested
+        if (!empty($data['cover_image']) && !empty($data['photo_album_id'])) {
+            $this->assignPhotoToLocation($data['photo_album_id'], $data['new_album_title'] ?? '', $data['cover_image'], $post->title);
+        }
+
         return redirect()->route('admin.posts.index')->with('success', 'Post created!');
     }
 
@@ -45,7 +55,7 @@ class AdminPostController extends Controller
             'post'     => $post,
             'types'    => PostType::active()->orderBy('sort_order')->pluck('name', 'type_key'),
             'packages' => Package::active()->orderBy('name')->get(['id', 'name', 'type']),
-            'albums'   => GalleryAlbum::orderBy('title')->get(['id', 'title']),
+            'albums'   => Location::where('is_active', true)->orderBy('name')->get(['id', 'name']),
         ]);
     }
 
@@ -53,7 +63,17 @@ class AdminPostController extends Controller
     {
         $data = $this->validatePost($req);
         if ($data['published'] && !$post->published) $data['published_at'] = now();
+        if ($req->hasFile('cover_image')) {
+            ImageService::delete($post->cover_image);
+            $data['cover_image'] = ImageService::store($req->file('cover_image'), 'posts');
+        }
         $post->update($data);
+
+        // Assign cover photo to Location gallery if requested
+        if (!empty($data['cover_image']) && !empty($data['photo_album_id'])) {
+            $this->assignPhotoToLocation($data['photo_album_id'], $data['new_album_title'] ?? '', $data['cover_image'], $post->title);
+        }
+
         return redirect()->route('admin.posts.index')->with('success', 'Post updated!');
     }
 
@@ -89,5 +109,26 @@ class AdminPostController extends Controller
             'meta_description'   => 'nullable|string|max:160',
             'related_package_id' => 'nullable|exists:packages,id',
         ]) + ['slug' => Str::slug($req->title)];
+    }
+
+    private function assignPhotoToLocation($locationId, $newLocationName, $imagePath, $postTitle)
+    {
+        $location = null;
+        if ($locationId === 'new' && !empty($newLocationName)) {
+            $location = Location::create([
+                'name' => $newLocationName,
+                'slug' => Str::slug($newLocationName),
+                'is_active' => true,
+            ]);
+        } elseif (is_numeric($locationId)) {
+            $location = Location::find($locationId);
+        }
+
+        if ($location) {
+            $location->images()->create([
+                'image_path' => $imagePath,
+                'caption' => $postTitle . ' - Cover Photo',
+            ]);
+        }
     }
 }

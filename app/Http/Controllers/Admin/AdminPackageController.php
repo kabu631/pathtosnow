@@ -9,6 +9,7 @@ use Illuminate\Validation\Rule;
 use App\Models\Package;
 use App\Models\PackageType;
 use App\Models\Country;
+use App\Services\ImageService;
 
 class AdminPackageController extends Controller
 {
@@ -46,6 +47,7 @@ class AdminPackageController extends Controller
             'package'    => null,
             'types'      => $isAbroad ? self::ABROAD_TYPES : PackageType::active()->orderBy('sort_order')->pluck('name', 'type_key'),
             'countries'  => Country::active()->orderBy('name')->pluck('name', 'id'),
+            'locations'  => \App\Models\Location::where('is_active', true)->orderBy('name')->pluck('name', 'id'),
             'is_abroad'  => $isAbroad,
         ]);
     }
@@ -53,6 +55,19 @@ class AdminPackageController extends Controller
     public function store(Request $req)
     {
         $data = $this->validatePkg($req);
+
+        if ($req->hasFile('cover_image_file')) {
+            $data['cover_image'] = ImageService::store($req->file('cover_image_file'), 'packages');
+        }
+
+        $gallery = [];
+        if ($req->hasFile('gallery_files')) {
+            foreach ($req->file('gallery_files') as $file) {
+                $gallery[] = ImageService::store($file, 'packages/gallery');
+            }
+        }
+        $data['gallery'] = $gallery;
+
         Package::create($data);
         return redirect()->route('admin.packages.index')->with('success', 'Package created!');
     }
@@ -64,13 +79,37 @@ class AdminPackageController extends Controller
             'package'   => $package->load('itineraryDays'),
             'types'     => $isAbroad ? self::ABROAD_TYPES : PackageType::active()->orderBy('sort_order')->pluck('name', 'type_key'),
             'countries' => Country::active()->orderBy('name')->pluck('name', 'id'),
-            'is_abroad' => $isAbroad,
+            'locations'  => \App\Models\Location::where('is_active', true)->orderBy('name')->pluck('name', 'id'),
+            'is_abroad'  => $isAbroad,
         ]);
     }
 
     public function update(Request $req, Package $package)
     {
-        $package->update($this->validatePkg($req, $package));
+        $data = $this->validatePkg($req, $package);
+
+        if ($req->hasFile('cover_image_file')) {
+            if ($package->cover_image) {
+                ImageService::delete($package->cover_image);
+            }
+            $data['cover_image'] = ImageService::store($req->file('cover_image_file'), 'packages');
+        }
+
+        $retainedGallery = $req->input('gallery', []);
+        $existingGallery = $package->gallery ?? [];
+        $deletedGallery = array_diff($existingGallery, $retainedGallery);
+        foreach ($deletedGallery as $delImg) {
+            ImageService::delete($delImg);
+        }
+
+        if ($req->hasFile('gallery_files')) {
+            foreach ($req->file('gallery_files') as $file) {
+                $retainedGallery[] = ImageService::store($file, 'packages/gallery');
+            }
+        }
+        $data['gallery'] = $retainedGallery;
+
+        $package->update($data);
         return redirect()->route('admin.packages.index')->with('success', 'Package updated!');
     }
 
@@ -96,6 +135,7 @@ class AdminPackageController extends Controller
         $data = $req->validate([
             'type'              => $typeRule,
             'country_id'        => $isAbroad ? 'required|exists:countries,id' : 'nullable|exists:countries,id',
+            'location_id'       => 'nullable|exists:locations,id',
             'name'              => 'required|string|max:255',
             'slug'              => 'nullable|string|max:255',
             'location'          => 'required|string|max:255',
@@ -103,9 +143,16 @@ class AdminPackageController extends Controller
             'short_description' => 'required|string|max:500',
             'description'       => 'required|string',
             'cover_image'       => 'nullable|string',
+            'cover_image_file'  => 'nullable|image|max:5120',
             'gallery'           => 'nullable|array',
+            'gallery_files'     => 'nullable|array',
+            'gallery_files.*'   => 'image|max:5120',
             'price_per_person'  => 'required|numeric|min:0',
             'price_nrs'         => 'nullable|numeric|min:0',
+            'original_price'    => 'nullable|numeric|min:0',
+            'original_price_nrs'=> 'nullable|numeric|min:0',
+            'discount_label'    => 'nullable|string|max:100',
+            'is_special_offer'  => 'boolean',
             'price_group'       => 'nullable|numeric|min:0',
             'duration_days'     => 'required|integer|min:1',
             'duration_nights'   => 'nullable|integer',

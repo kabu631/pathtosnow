@@ -53,7 +53,7 @@
                     <label class="label text-emerald-800">Assign Photo to Gallery Location?</label>
                     <select v-model="form.photo_album_id" class="input">
                         <option :value="null">Don't add to gallery</option>
-                        <option v-for="album in albums" :key="album.id" :value="album.id">{{ album.title }}</option>
+                        <option v-for="album in albums" :key="album.id" :value="album.id">{{ album.name }}</option>
                         <option value="new">+ Add new location</option>
                     </select>
                     <div v-if="form.photo_album_id === 'new'" class="mt-2">

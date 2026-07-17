@@ -3,7 +3,6 @@ import { Head, Link, router } from '@inertiajs/vue3'
 import AppLayout from '@/Layouts/AppLayout.vue'
 import PackageCard from '@/Components/PackageCard.vue'
 import LeftSidebar from '@/Components/LeftSidebar.vue'
-import RightSidebar from '@/Components/RightSidebar.vue'
 import Pagination from '@/Components/Pagination.vue'
 import { ref, watch } from 'vue'
 
@@ -96,7 +95,7 @@ watch([difficulty, sort], search)
           <span class="text-5xl drop-shadow-lg">{{ cfg.icon }}</span>
           <span :class="cfg.badge" class="badge text-sm px-3 py-1 shadow-sm">Nepal Experiences</span>
         </div>
-        <h1 class="text-4xl md:text-5xl font-black leading-tight mb-3 drop-shadow-md">{{ cfg.h1 }}</h1>
+        <h1 class="text-4xl md:text-5xl font-black leading-tight mb-3 drop-shadow-md text-white">{{ cfg.h1 }}</h1>
         <p class="text-white/90 text-lg max-w-2xl drop-shadow">{{ cfg.desc }}</p>
       </div>
     </section>
@@ -142,7 +141,7 @@ watch([difficulty, sort], search)
           Showing {{ packages.data.length }} of {{ packages.total }} packages
         </p>
 
-        <div v-if="packages.data.length" class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <div v-if="packages.data.length" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           <PackageCard v-for="pkg in packages.data" :key="pkg.id" :package="pkg" />
         </div>
         <div v-else class="text-center py-24 bg-slate-50 rounded-2xl border border-slate-200">
@@ -154,7 +153,6 @@ watch([difficulty, sort], search)
         <Pagination :meta="packages" />
       </main>
 
-      <RightSidebar />
 
     </div>
   </AppLayout>

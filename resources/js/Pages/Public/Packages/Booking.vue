@@ -1,7 +1,7 @@
 <template>
 <!-- resources/js/Pages/Public/Packages/Booking.vue -->
 <AppLayout>
-    <Head><title>Book {{ pkg.name }}</title></Head>
+    <Head><title>{{ form.is_quotation ? 'Request a Quote' : 'Book' }} {{ pkg.name }}</title></Head>
     <div class="min-h-screen bg-gray-50">
         <div class="container-main py-10">
 
@@ -14,7 +14,9 @@
 
                 <!-- Form -->
                 <div class="lg:col-span-2">
-                    <h1 class="text-2xl font-black text-[#0f172a] mb-6">Book your experience</h1>
+                    <h1 class="text-2xl font-black text-[#0f172a] mb-6">
+                        {{ form.is_quotation ? 'Request a Quotation' : 'Book your experience' }}
+                    </h1>
 
                     <div v-if="Object.keys(errors).length"
                          class="mb-5 bg-red-50 border border-red-200 text-red-700 text-sm px-4 py-3 rounded-xl">
@@ -83,11 +85,11 @@
 
                         <button type="submit" :disabled="submitting"
                                 :class="['btn-primary w-full py-4 text-base justify-center', submitting && 'opacity-60 cursor-not-allowed']">
-                            {{ submitting ? 'Submitting...' : `Confirm booking — $${totalPrice.toFixed(2)}` }}
+                            {{ submitting ? 'Submitting...' : (form.is_quotation ? 'Submit Quotation Request' : `Confirm booking — $${totalPrice.toFixed(2)}`) }}
                         </button>
 
                         <p class="text-xs text-center text-gray-400">
-                            No payment required now. Our team will contact you within 24 hours to confirm.
+                            {{ form.is_quotation ? 'Our team will contact you with a customized quote based on your requests.' : 'No payment required now. Our team will contact you within 24 hours to confirm.' }}
                         </p>
                     </form>
                 </div>
@@ -134,7 +136,7 @@ import { ref, computed } from 'vue'
 import { Head, Link, router, usePage } from '@inertiajs/vue3'
 import AppLayout from '@/Layouts/AppLayout.vue'
 
-const props = defineProps({ package: Object, user: Object })
+const props = defineProps({ package: Object, user: Object, isQuote: Boolean })
 const pkg   = computed(() => props.package)
 const page  = usePage()
 const errors = computed(() => page.props.errors || {})
@@ -145,6 +147,7 @@ const form = ref({
     customer_phone: props.user?.phone || '', customer_nationality: props.user?.nationality || '',
     travel_date: '', group_size: pkg.value.min_group_size,
     special_requests: '', emergency_contact_name: '', emergency_contact_phone: '',
+    is_quotation: props.isQuote || false,
 })
 
 const minDate = new Date(Date.now() + 86400000).toISOString().split('T')[0]

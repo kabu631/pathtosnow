@@ -13,18 +13,18 @@ class StaticPageSeeder extends Seeder
                 'slug'             => 'about-us',
                 'title'            => 'About Us',
                 'sort_order'       => 1,
-                'meta_description' => 'Learn about TrekBazar Nepal — your trusted partner for authentic Himalayan travel experiences.',
-                'content'          => '<h2>Welcome to TrekBazar Nepal</h2>
-<p>TrekBazar is Nepal\'s premier online travel marketplace, connecting adventurers from around the world with authentic, locally-guided experiences in the heart of the Himalayas.</p>
+                'meta_description' => 'Learn about PathToSnow Nepal — your trusted partner for authentic Himalayan travel experiences.',
+                'content'          => '<h2>Welcome to PathToSnow Nepal</h2>
+<p>PathToSnow is Nepal\'s premier online travel platform, connecting adventurers from around the world with authentic, locally-guided experiences in the heart of the Himalayas.</p>
 
 <h3>Our Story</h3>
-<p>Founded in Kathmandu, TrekBazar was born from a passion for responsible tourism and a deep love for Nepal\'s incredible landscapes, culture, and people. We believe that the best travel experiences come from genuine local knowledge and meaningful connections.</p>
+<p>Founded in Kathmandu, PathToSnow was born from a passion for responsible tourism and a deep love for Nepal\'s incredible landscapes, culture, and people. We believe that the best travel experiences come from genuine local knowledge and meaningful connections.</p>
 
 <h3>What We Offer</h3>
 <ul>
-  <li><strong>Trekking & Adventure</strong> — From Everest Base Camp to remote Himalayan trails</li>
+  <li><strong>Trekking &amp; Adventure</strong> — From Everest Base Camp to remote Himalayan trails</li>
   <li><strong>Cultural Experiences</strong> — UNESCO World Heritage sites, festivals, and local homestays</li>
-  <li><strong>Wildlife & Nature</strong> — Chitwan, Bardia, and Nepal\'s stunning national parks</li>
+  <li><strong>Wildlife &amp; Nature</strong> — Chitwan, Bardia, and Nepal\'s stunning national parks</li>
   <li><strong>Gear Shop</strong> — Authentic Nepali trekking gear and souvenirs</li>
 </ul>
 
@@ -33,17 +33,17 @@ class StaticPageSeeder extends Seeder
 
 <h3>Get In Touch</h3>
 <p>Have questions? Our team of local experts is always happy to help you plan your perfect Nepal adventure.</p>
-<p>📧 <a href="mailto:hello@trekbazar.com">hello@trekbazar.com</a><br>📞 +977-1-XXXXXXX<br>📍 Thamel, Kathmandu, Nepal</p>',
+<p>📧 <a href="mailto:hello@pathtosnow.com">hello@pathtosnow.com</a><br>📍 Thamel, Kathmandu, Nepal</p>',
             ],
             [
                 'slug'             => 'privacy-policy',
                 'title'            => 'Privacy Policy',
                 'sort_order'       => 2,
-                'meta_description' => 'TrekBazar Nepal Privacy Policy — how we collect, use and protect your personal data.',
+                'meta_description' => 'PathToSnow Nepal Privacy Policy — how we collect, use and protect your personal data.',
                 'content'          => '<h2>Privacy Policy</h2>
-<p><em>Last updated: April 2026</em></p>
+<p><em>Last updated: July 2026</em></p>
 
-<p>TrekBazar Nepal ("we", "us", "our") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website.</p>
+<p>PathToSnow Nepal ("we", "us", "our") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website.</p>
 
 <h3>Information We Collect</h3>
 <ul>
@@ -67,30 +67,30 @@ class StaticPageSeeder extends Seeder
 <p>We may use third-party services (Google Analytics, payment processors) that collect data under their own privacy policies.</p>
 
 <h3>Your Rights</h3>
-<p>You have the right to access, correct, or delete your personal data. Contact us at <a href="mailto:privacy@trekbazar.com">privacy@trekbazar.com</a> to exercise these rights.</p>
+<p>You have the right to access, correct, or delete your personal data. Contact us at <a href="mailto:privacy@pathtosnow.com">privacy@pathtosnow.com</a> to exercise these rights.</p>
 
 <h3>Contact</h3>
-<p>For privacy-related enquiries: <a href="mailto:privacy@trekbazar.com">privacy@trekbazar.com</a></p>',
+<p>For privacy-related enquiries: <a href="mailto:privacy@pathtosnow.com">privacy@pathtosnow.com</a></p>',
             ],
             [
                 'slug'             => 'terms-of-service',
                 'title'            => 'Terms of Service',
                 'sort_order'       => 3,
-                'meta_description' => 'TrekBazar Nepal Terms of Service — the rules and guidelines for using our platform.',
+                'meta_description' => 'PathToSnow Nepal Terms of Service — the rules and guidelines for using our platform.',
                 'content'          => '<h2>Terms of Service</h2>
-<p><em>Last updated: April 2026</em></p>
+<p><em>Last updated: July 2026</em></p>
 
-<p>By accessing or using TrekBazar Nepal ("the Service"), you agree to be bound by these Terms of Service. Please read them carefully.</p>
+<p>By accessing or using PathToSnow Nepal ("the Service"), you agree to be bound by these Terms of Service. Please read them carefully.</p>
 
 <h3>1. Acceptance of Terms</h3>
 <p>By using our website, you confirm that you are at least 18 years old and agree to these terms. If you do not agree, please do not use our services.</p>
 
-<h3>2. Bookings & Payments</h3>
+<h3>2. Bookings &amp; Payments</h3>
 <ul>
   <li>All bookings are subject to availability and confirmation</li>
   <li>Prices are displayed in USD unless otherwise stated</li>
   <li>Full payment is required to confirm a booking</li>
-  <li>TrekBazar acts as an agent between you and local service providers</li>
+  <li>PathToSnow acts as an agent between you and local service providers</li>
 </ul>
 
 <h3>3. Cancellation Policy</h3>
@@ -104,33 +104,33 @@ class StaticPageSeeder extends Seeder
 <p>You are responsible for ensuring you have valid travel documents, travel insurance, and physical fitness appropriate for your chosen activity.</p>
 
 <h3>5. Limitation of Liability</h3>
-<p>TrekBazar shall not be liable for injury, loss, or damage arising from participation in activities. All adventure activities carry inherent risks.</p>
+<p>PathToSnow shall not be liable for injury, loss, or damage arising from participation in activities. All adventure activities carry inherent risks.</p>
 
 <h3>6. Governing Law</h3>
 <p>These terms are governed by the laws of Nepal. Disputes shall be subject to the exclusive jurisdiction of courts in Kathmandu.</p>
 
 <h3>Contact</h3>
-<p>For legal enquiries: <a href="mailto:legal@trekbazar.com">legal@trekbazar.com</a></p>',
+<p>For legal enquiries: <a href="mailto:legal@pathtosnow.com">legal@pathtosnow.com</a></p>',
             ],
             [
                 'slug'             => 'contact-us',
                 'title'            => 'Contact Us',
                 'sort_order'       => 4,
-                'meta_description' => 'Get in touch with TrekBazar Nepal — we\'re here to help plan your perfect Nepal adventure.',
+                'meta_description' => 'Get in touch with PathToSnow Nepal — we\'re here to help plan your perfect Nepal adventure.',
                 'content'          => '<h2>Contact Us</h2>
 <p>We\'d love to hear from you! Whether you have a question about a package, need help with a booking, or just want to learn more about Nepal — our team is here to help.</p>
 
 <h3>📍 Our Office</h3>
-<p>TrekBazar Nepal<br>Thamel, Kathmandu 44600<br>Nepal</p>
+<p>PathToSnow Nepal<br>Thamel, Kathmandu 44600<br>Nepal</p>
 
-<h3>📞 Phone & WhatsApp</h3>
-<p>+977-1-XXXXXXX<br>WhatsApp: +977-98XXXXXXXX<br>Available: Sunday–Friday, 9am–6pm NPT</p>
+<h3>📞 Phone &amp; WhatsApp</h3>
+<p>+977-1-4700000<br>WhatsApp: +977-9800000000<br>Available: Sunday–Friday, 9am–6pm NPT</p>
 
 <h3>📧 Email</h3>
 <ul>
-  <li>General enquiries: <a href="mailto:hello@trekbazar.com">hello@trekbazar.com</a></li>
-  <li>Bookings: <a href="mailto:bookings@trekbazar.com">bookings@trekbazar.com</a></li>
-  <li>Support: <a href="mailto:support@trekbazar.com">support@trekbazar.com</a></li>
+  <li>General enquiries: <a href="mailto:hello@pathtosnow.com">hello@pathtosnow.com</a></li>
+  <li>Bookings: <a href="mailto:bookings@pathtosnow.com">bookings@pathtosnow.com</a></li>
+  <li>Support: <a href="mailto:support@pathtosnow.com">support@pathtosnow.com</a></li>
 </ul>
 
 <h3>🕐 Response Time</h3>
