@@ -453,7 +453,7 @@ function doSearch() {
   if (!q) return
   searchOpen.value = false
   searchQ.value = ''
-  router.get('/packages', { q }, { preserveState: false, replace: false })
+  router.get('/search', { q }, { preserveState: false, replace: false })
 }
 
 const flash = computed(() => page.props.flash?.success)

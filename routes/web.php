@@ -1,11 +1,12 @@
 <?php
 // routes/web.php
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Public\{HomeController, PackageController, BlogController, ShopController, CartController, BookingController, LocationController, StaticPageController, ContactController};
+use App\Http\Controllers\Public\{HomeController, PackageController, BlogController, ShopController, CartController, BookingController, LocationController, StaticPageController, ContactController, SearchController};
 use App\Http\Controllers\Admin\{DashboardController, AdminPackageController, ItineraryController, AdminBookingController, AdminPostController, AdminProductController, AdminOrderController, AdminLocationController, LocationImageController, AdminTestimonialController, AdminSlideController, AdminPageController, AdminContactController, AdminPackageTypeController, AdminPostTypeController, AdminUserController};
 use App\Http\Controllers\Auth\AuthController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/search', [SearchController::class, 'index'])->name('search');
 
 // Packages (all 6 types)
 Route::prefix('packages')->name('packages.')->group(function () {
